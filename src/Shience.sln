@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shience", "Shience\Shience.csproj", "{DB9DFB8E-3595-44DA-8BDD-3B9EAAE850C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shience.Test", "Shience.Test\Shience.Test.csproj", "{D8C73240-A4A7-4779-9E8D-3FB72CE56811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{DB9DFB8E-3595-44DA-8BDD-3B9EAAE850C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB9DFB8E-3595-44DA-8BDD-3B9EAAE850C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB9DFB8E-3595-44DA-8BDD-3B9EAAE850C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8C73240-A4A7-4779-9E8D-3FB72CE56811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8C73240-A4A7-4779-9E8D-3FB72CE56811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8C73240-A4A7-4779-9E8D-3FB72CE56811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8C73240-A4A7-4779-9E8D-3FB72CE56811}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
