@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shience
 {
     public class Science<TResult>
     {
+        public TResult Test(Func<TResult> control, Func<TResult> candidate)
+        {
+            var controlResult = control();
+            var candidateResult = candidate();
+
+            return controlResult;
+        }
     }
 }
