@@ -25,8 +25,19 @@ namespace Shience
             var experimentResult = new ExperimentResult<TResult>(_comparer);
             experimentResult.TestName = _testName;
 
-            var controlResult = InternalTest(control);
-            var candidateResult = InternalTest(candidate);
+            TestResult<TResult> controlResult, candidateResult;
+
+            if (new Random().Next()%2 == 0)
+            {
+                experimentResult.ControlRanFirst = true;
+                controlResult = InternalTest(control);
+                candidateResult = InternalTest(candidate);
+            }
+            else
+            {
+                candidateResult = InternalTest(candidate);
+                controlResult = InternalTest(control);
+            }
 
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;

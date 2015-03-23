@@ -8,6 +8,7 @@ namespace Shience
         public TestResult<TResult> ControlResult { get; set; }
         public TestResult<TResult> CandidateResult { get; set; }
         private readonly IComparer<TResult> _comparer;
+        public bool ControlRanFirst { get; set; }
 
         public ExperimentResult(IComparer<TResult> comparer)
         {
