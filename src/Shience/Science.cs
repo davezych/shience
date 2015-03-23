@@ -14,8 +14,14 @@ namespace Shience
 
         public TResult Test(Func<TResult> control, Func<TResult> candidate)
         {
+            var experimentResult = new ExperimentResult<TResult>();
+            experimentResult.TestName = _testName;
+
             var controlResult = InternalTest(control);
             var candidateResult = InternalTest(candidate);
+
+            experimentResult.ControlResult = controlResult;
+            experimentResult.CandidateResult = candidateResult;
 
             return controlResult.Result;
         }

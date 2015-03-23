@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExperimentResult.cs" />
     <Compile Include="Science.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestResult.cs" />
