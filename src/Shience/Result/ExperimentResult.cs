@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Shience
+namespace Shience.Result
 {
     public class ExperimentResult<TResult>
     {

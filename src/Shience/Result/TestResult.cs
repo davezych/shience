@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shience
+namespace Shience.Result
 {
     public class TestResult<TResult>
     {

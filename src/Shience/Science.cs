@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Shience.Result;
 
 namespace Shience
 {
@@ -30,8 +31,7 @@ namespace Shience
                 return Run(control);
             }
 
-            var experimentResult = new ExperimentResult<TResult>(_comparer);
-            experimentResult.TestName = _testName;
+            var experimentResult = new ExperimentResult<TResult>(_comparer) {TestName = _testName};
 
             TestResult<TResult> controlResult, candidateResult;
 
