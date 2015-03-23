@@ -22,6 +22,12 @@ namespace Shience
 
         public TResult Test(Func<TResult> control, Func<TResult> candidate)
         {
+            //If candidate is null, don't do any science
+            if (candidate == null)
+            {
+                return Run(control);
+            }
+
             var experimentResult = new ExperimentResult<TResult>(_comparer);
             experimentResult.TestName = _testName;
 
