@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Shience
 {
@@ -8,6 +9,7 @@ namespace Shience
     {
         private readonly string _testName;
         private readonly IComparer<TResult> _comparer;
+        private const string PublishFilePath = @"D:\scienceResults.txt";
 
         internal Science(string testName)
         {
@@ -48,6 +50,8 @@ namespace Shience
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;
 
+            Publish(experimentResult);
+
             return controlResult.Result;
         }
 
@@ -77,6 +81,14 @@ namespace Shience
         private TResult Run(Func<TResult> action)
         {
             return action();
+        }
+
+        public void Publish(ExperimentResult<TResult> result)
+        {
+            using (var sw = new StreamWriter(PublishFilePath, true))
+            {
+                sw.WriteLine(result.TestName + "|" + result.ControlResult.Result + "|" + result.ControlResult.RunTime + "|" + result.CandidateResult.Result + "|" + result.CandidateResult.RunTime + "|" + result.Matched);
+            }
         }
     }
 }
