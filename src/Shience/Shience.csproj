@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Publish\FilePublisher.cs" />
+    <Compile Include="Publish\IPublisher.cs" />
     <Compile Include="Result\ExperimentResult.cs" />
     <Compile Include="Science.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

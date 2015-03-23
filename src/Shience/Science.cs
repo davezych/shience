@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Shience.Publish;
 using Shience.Result;
 
 namespace Shience
@@ -10,7 +11,6 @@ namespace Shience
     {
         private readonly string _testName;
         private readonly IComparer<TResult> _comparer;
-        private const string PublishFilePath = @"D:\scienceResults.txt";
 
         internal Science(string testName)
         {
@@ -50,7 +50,8 @@ namespace Shience
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;
 
-            Publish(experimentResult);
+            var publisher = new FilePublisher<TResult>();
+            publisher.Publish(experimentResult);
 
             return controlResult.Result;
         }
@@ -81,15 +82,6 @@ namespace Shience
         private TResult Run(Func<TResult> action)
         {
             return action();
-        }
-
-        public void Publish(ExperimentResult<TResult> result)
-        {
-            using (var sw = new StreamWriter(PublishFilePath, true))
-            {
-                //TODO: Need to add exception (if any) to publishing
-                sw.WriteLine(result.TestName + "|" + result.ControlResult.Result + "|" + result.ControlResult.RunTime + "|" + result.CandidateResult.Result + "|" + result.CandidateResult.RunTime + "|" + result.Matched);
-            }
         }
     }
 }
