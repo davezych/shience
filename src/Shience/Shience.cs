@@ -1,20 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Shience.Publish;
 
 namespace Shience
 {
     public static class Shience
     {
+        private static Type _publisherType;
+
+        public static void SetPublisher(Type publisherType)
+        {
+            _publisherType = publisherType;
+        }
+
+        private static IPublisher<T> GetInstanceOfPublisher<T>()
+        {
+            if (_publisherType == null)
+            {
+                throw new ArgumentException("PublisherType");
+            }
+
+            var constructed = _publisherType.MakeGenericType(typeof (T));
+            return (IPublisher<T>) Activator.CreateInstance(constructed);
+        }
+
         public static Science<TResult> New<TResult>(string name)
         {
-            var publisher = new FilePublisher<TResult>(@"D:\shienceResults.txt");
-            return new Science<TResult>(name, publisher);
+            return new Science<TResult>(name, GetInstanceOfPublisher<TResult>());
         }
 
         public static Science<TResult> New<TResult>(string name, IComparer<TResult> comparer)
         {
-            var publisher = new FilePublisher<TResult>(@"D:\shienceResults.txt");
-            return new Science<TResult>(name, publisher, comparer);
+            return new Science<TResult>(name, GetInstanceOfPublisher<TResult>(), comparer);
         }
     }
 }
