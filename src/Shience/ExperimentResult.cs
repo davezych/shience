@@ -9,13 +9,12 @@ namespace Shience
         public TestResult<TResult> CandidateResult { get; set; }
         private readonly IComparer<TResult> _comparer;
 
-        public ExperimentResult()
-        {
-            _comparer = Comparer<TResult>.Default;
-        }
-        
         public ExperimentResult(IComparer<TResult> comparer)
         {
+            if (comparer == null)
+            {
+                comparer = Comparer<TResult>.Default;
+            }
             _comparer = comparer;
         }
 

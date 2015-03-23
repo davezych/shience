@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Shience
@@ -6,15 +7,22 @@ namespace Shience
     public class Science<TResult>
     {
         private readonly string _testName;
+        private readonly IComparer<TResult> _comparer;
 
         internal Science(string testName)
         {
             _testName = testName;
         }
 
+        internal Science(string testName, IComparer<TResult> comparer)
+        {
+            _testName = testName;
+            _comparer = comparer;
+        }
+
         public TResult Test(Func<TResult> control, Func<TResult> candidate)
         {
-            var experimentResult = new ExperimentResult<TResult>();
+            var experimentResult = new ExperimentResult<TResult>(_comparer);
             experimentResult.TestName = _testName;
 
             var controlResult = InternalTest(control);
