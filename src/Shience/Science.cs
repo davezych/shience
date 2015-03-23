@@ -87,6 +87,7 @@ namespace Shience
         {
             using (var sw = new StreamWriter(PublishFilePath, true))
             {
+                //TODO: Need to add exception (if any) to publishing
                 sw.WriteLine(result.TestName + "|" + result.ControlResult.Result + "|" + result.ControlResult.RunTime + "|" + result.CandidateResult.Result + "|" + result.CandidateResult.RunTime + "|" + result.Matched);
             }
         }
