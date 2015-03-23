@@ -10,17 +10,20 @@ namespace Shience
     public class Science<TResult>
     {
         private readonly string _testName;
+        private readonly IPublisher<TResult> _publisher;
         private readonly IComparer<TResult> _comparer;
 
-        internal Science(string testName)
+        internal Science(string testName, IPublisher<TResult> publisher)
         {
             _testName = testName;
+            _publisher = publisher;
         }
 
-        internal Science(string testName, IComparer<TResult> comparer)
+        internal Science(string testName, IPublisher<TResult> publisher, IComparer<TResult> comparer)
         {
             _testName = testName;
             _comparer = comparer;
+            _publisher = publisher;
         }
 
         public TResult Test(Func<TResult> control, Func<TResult> candidate)
@@ -50,8 +53,7 @@ namespace Shience
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;
 
-            var publisher = new FilePublisher<TResult>();
-            publisher.Publish(experimentResult);
+            _publisher.Publish(experimentResult);
 
             return controlResult.Result;
         }
