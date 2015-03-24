@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using Shience.Publish;
 using Shience.Result;
 
@@ -11,18 +9,10 @@ namespace Shience
     {
         private readonly string _testName;
         private readonly IPublisher<TResult> _publisher;
-        private readonly IComparer<TResult> _comparer;
 
         internal Science(string testName, IPublisher<TResult> publisher)
         {
             _testName = testName;
-            _publisher = publisher;
-        }
-
-        internal Science(string testName, IPublisher<TResult> publisher, IComparer<TResult> comparer)
-        {
-            _testName = testName;
-            _comparer = comparer;
             _publisher = publisher;
         }
 
@@ -34,7 +24,7 @@ namespace Shience
                 return Run(control);
             }
 
-            var experimentResult = new ExperimentResult<TResult>(_comparer) {TestName = _testName};
+            var experimentResult = new ExperimentResult<TResult> {TestName = _testName};
 
             TestResult<TResult> controlResult, candidateResult;
 

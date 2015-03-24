@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Shience.Publish;
 
 namespace Shience
@@ -27,11 +26,6 @@ namespace Shience
         public static Science<TResult> New<TResult>(string name)
         {
             return new Science<TResult>(name, GetInstanceOfPublisher<TResult>());
-        }
-
-        public static Science<TResult> New<TResult>(string name, IComparer<TResult> comparer)
-        {
-            return new Science<TResult>(name, GetInstanceOfPublisher<TResult>(), comparer);
         }
     }
 }

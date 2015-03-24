@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shience.Publish;
 
 namespace Shience.Test
@@ -57,6 +59,27 @@ namespace Shience.Test
         private class TestHelper
         {
             public int Number { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var otherTestHelper = obj as TestHelper;
+                if (otherTestHelper == null)
+                {
+                    return false;
+                }
+
+                if (otherTestHelper.Number == this.Number)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode() ^ Number;
+            }
         }
     }
 }
