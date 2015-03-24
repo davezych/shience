@@ -19,7 +19,7 @@ Let's pretend you're doing the same example as in Scientist's example and are ch
         //do things!
     }
                              
-Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
+Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will also compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
 
 ##Context
 Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects can be published with the specified Publisher.
