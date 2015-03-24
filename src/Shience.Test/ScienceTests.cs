@@ -53,6 +53,30 @@ namespace Shience.Test
             Assert.AreEqual(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnObject"]);
         }
 
+        [TestMethod]
+        public void ComparerFuncReturnsCorrectTrueResult()
+        {
+            var science = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult");
+
+            var result = science.Test(control: (() => { return true; }),
+                                      candidate: (() => { return true; }),
+                                      comparer: (a, b) => { return a == b; });
+
+            Assert.AreEqual(true, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectTrueResult"]);
+        }
+
+        [TestMethod]
+        public void ComparerFuncReturnsCorrectFalseResult()
+        {
+            var science = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult");
+
+            var result = science.Test(control: (() => { return true; }),
+                                      candidate: (() => { return false; }),
+                                      comparer: (a, b) => { return a == b; });
+
+            Assert.AreEqual(false, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectFalseResult"]);
+        }
+
         private class TestHelper
         {
             public int Number { get; set; }
