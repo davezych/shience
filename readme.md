@@ -22,7 +22,7 @@ Let's pretend you're doing the same thing as in Scientist's example and are chan
 Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will also compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
 
 ##Context
-Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects can be published with the specified Publisher.
+Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published the rest of the data.
 
     var userCanRead = science.Test(
                                     control: (() => return UserPermissions.CheckUser(currentUser); ), 
