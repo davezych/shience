@@ -68,5 +68,5 @@ You can also pass in a comparing `Func<>` to the `Test` method.
     var userCanRead = science.Test(
                                     control: (() => return UserPermissions.CheckUser(currentUser); ), 
                                     candidate: (() => return User.Can(currentUser, Permission.Read); ),
-                                    comparer: (a, b) => { return a == b; }
+                                    comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
                              )
