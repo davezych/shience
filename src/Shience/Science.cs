@@ -16,7 +16,17 @@ namespace Shience
             _publisher = publisher;
         }
 
+        public TResult Test(Func<TResult> control, Func<TResult> candidate)
+        {
+            return Test(control, candidate, null, null);
+        }
+
         public TResult Test(Func<TResult> control, Func<TResult> candidate, params object[] contexts)
+        {
+            return Test(control, candidate, null, contexts);
+        }
+
+        public TResult Test(Func<TResult> control, Func<TResult> candidate, Func<TResult, TResult, bool> comparer, params object[] contexts)
         {
             //If candidate is null, don't do any science
             if (candidate == null)
@@ -24,8 +34,16 @@ namespace Shience
                 return Run(control);
             }
 
-            var experimentResult = new ExperimentResult<TResult> {TestName = _testName};
-            experimentResult.Contexts.AddRange(contexts);
+            var experimentResult = new ExperimentResult<TResult>
+            {
+                TestName = _testName,
+                ComparerFunc = comparer,
+            };
+
+            if (contexts != null)
+            {
+                experimentResult.Contexts.AddRange(contexts);
+            }
 
             TestResult<TResult> controlResult, candidateResult;
 

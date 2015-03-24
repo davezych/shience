@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Shience.Result
 {
@@ -9,6 +10,7 @@ namespace Shience.Result
         public TestResult<TResult> CandidateResult { get; set; }
         public bool ControlRanFirst { get; set; }
         public List<object> Contexts { get; set; }
+        public Func<TResult, TResult, bool> ComparerFunc { get; set; }
 
         public ExperimentResult()
         {
@@ -17,7 +19,15 @@ namespace Shience.Result
 
         public bool Matched
         {
-            get { return ControlResult.Result.Equals(CandidateResult.Result); }
+            get
+            {
+                if (ComparerFunc != null)
+                {
+                    return ComparerFunc(ControlResult.Result, CandidateResult.Result);
+                }
+
+                return ControlResult.Result.Equals(CandidateResult.Result);
+            }
         }
     }
 }
