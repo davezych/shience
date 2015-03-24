@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Shience.Publish;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Shience.Test
 {
