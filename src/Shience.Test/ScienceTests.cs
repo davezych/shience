@@ -15,43 +15,43 @@ namespace Shience.Test
         [TestMethod]
         public void DefaultComparerReturnsTrueWithSameResultOnPrimitives()
         {
-            var science = Shience.New<bool>("Test");
+            var science = Shience.New<bool>("DefaultComparerReturnsTrueWithSameResultOnPrimitives");
 
             var result = science.Test(control: (() => { return true; }), candidate: (() => { return true; }));
 
-            Assert.AreEqual(true, result);
+            Assert.AreEqual(true, PublishingResults.TestNamesWithResults["DefaultComparerReturnsTrueWithSameResultOnPrimitives"]);
         }
 
         [TestMethod]
         public void DefaultComparerReturnsFalseWithDifferentResultOnPrimitives()
         {
-            var science = Shience.New<bool>("Test");
+            var science = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives");
 
             var result = science.Test(control: (() => { return true; }), candidate: (() => { return false; }));
 
-            Assert.AreEqual(false, result);
+            Assert.AreEqual(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnPrimitives"]);
         }
 
         [TestMethod]
         public void DefaultComparerReturnsTrueWithSameResultOnObject()
         {
-            var science = Shience.New<TestHelper>("Test");
+            var science = Shience.New<TestHelper>("DefaultComparerReturnsTrueWithSameResultOnObject");
 
             var result = science.Test(control: (() => { return new TestHelper {Number = 1}; }),
                 candidate: (() => { return new TestHelper {Number = 1}; }));
 
-            Assert.AreEqual(true, result);
+            Assert.AreEqual(true, PublishingResults.TestNamesWithResults["DefaultComparerReturnsTrueWithSameResultOnObject"]);
         }
 
         [TestMethod]
         public void DefaultComparerReturnsFalseWithDifferentResultOnObject()
         {
-            var science = Shience.New<TestHelper>("Test");
+            var science = Shience.New<TestHelper>("DefaultComparerReturnsFalseWithDifferentResultOnObject");
 
             var result = science.Test(control: (() => { return new TestHelper {Number = 1}; }),
                 candidate: (() => { return new TestHelper {Number = 2}; }));
 
-            Assert.AreEqual(true, result);
+            Assert.AreEqual(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnObject"]);
         }
 
         private class TestHelper
