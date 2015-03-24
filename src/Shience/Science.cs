@@ -16,7 +16,7 @@ namespace Shience
             _publisher = publisher;
         }
 
-        public TResult Test(Func<TResult> control, Func<TResult> candidate)
+        public TResult Test(Func<TResult> control, Func<TResult> candidate, params object[] contexts)
         {
             //If candidate is null, don't do any science
             if (candidate == null)
@@ -25,6 +25,7 @@ namespace Shience
             }
 
             var experimentResult = new ExperimentResult<TResult> {TestName = _testName};
+            experimentResult.Contexts.AddRange(contexts);
 
             TestResult<TResult> controlResult, candidateResult;
 

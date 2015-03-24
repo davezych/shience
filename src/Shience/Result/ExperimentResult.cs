@@ -1,4 +1,6 @@
-﻿namespace Shience.Result
+﻿using System.Collections.Generic;
+
+namespace Shience.Result
 {
     public class ExperimentResult<TResult>
     {
@@ -6,6 +8,12 @@
         public TestResult<TResult> ControlResult { get; set; }
         public TestResult<TResult> CandidateResult { get; set; }
         public bool ControlRanFirst { get; set; }
+        public List<object> Contexts { get; set; }
+
+        public ExperimentResult()
+        {
+            Contexts = new List<object>();
+        }
 
         public bool Matched
         {
