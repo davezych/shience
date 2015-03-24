@@ -2,7 +2,7 @@
 A .NET port(ish) of Github's Scientist library. (https://github.com/github/scientist)
 
 ##How do I do science?
-Let's pretend you're doing the same example as in Scientist's example and are changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
+Let's pretend you're doing the same thing as in Scientist's example and are changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
     //Set a publisher
     Shience.SetPublisher(typeof(FilePublisher<>), @"C:\file\path\to\results.txt");
