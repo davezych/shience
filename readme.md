@@ -9,9 +9,14 @@ Let's pretend you're doing the same example as in Scientist's example.
     
     var science = Shience.New<bool>("widget-permissions");
     
-    var result = science.Test(
+    var userCanRead = science.Test(
                                 control: (() => return UserPermissions.CheckUser(currentUser); ), 
                                 candidate: (() => return User.Can(currentUser, Permission.Read); )
                              )
+                             
+    if(userCanRead)
+    {
+        //do things!
+    }
                              
 Shience will run the control (the old way) and the candidate (the new way) in random order. It will compare the returned results of the methods and publish the comparison result using the publisher specified. 
