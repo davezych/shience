@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Shience.Result
 {
@@ -21,7 +22,7 @@ namespace Shience.Result
 
         public bool Matched
         {
-            get { return _comparer.Compare(ControlResult.Result, CandidateResult.Result) == 0; }
+            get { return ControlResult.Result.Equals(CandidateResult.Result); }
         }
     }
 }
