@@ -62,6 +62,11 @@ Shience, by default, compares results using `.Equals`. You can override `Equals`
         }
     }
 
+then
+
+    var result = science.Test(control: (() => { return new TestHelper {Number = 1}; }),
+                candidate: (() => { return new TestHelper {Number = 2}; }));
+
 ###Pass in a custom `Func<>`
 You can also pass in a comparing `Func<>` to the `Test` method.
 
