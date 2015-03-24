@@ -5,7 +5,7 @@ A .NET port(ish) of Github's Scientist library. (https://github.com/github/scien
 Let's pretend you're doing the same example as in Scientist's example.
 
     //Set a publisher
-    Shience.SetPublisher(typeof(FilePublisher<>));
+    Shience.SetPublisher(typeof(FilePublisher<>), @"C:\file\path\to\results.txt");
     
     var science = Shience.New<bool>("widget-permissions");
     
