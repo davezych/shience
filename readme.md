@@ -12,7 +12,7 @@ Let's pretend you're doing the same thing as in Scientist's example and are chan
     var userCanRead = science.Test(
                                     control: (() => return UserPermissions.CheckUser(currentUser); ), 
                                     candidate: (() => return User.Can(currentUser, Permission.Read); )
-                             )
+                             );
                              
     if(userCanRead)
     {
