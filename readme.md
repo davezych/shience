@@ -4,20 +4,22 @@ A .NET port(ish) of Github's Scientist library. (https://github.com/github/scien
 ##How do I do science?
 Let's pretend you're doing the same thing as in Scientist's example and are changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
-    //Set a publisher
-    Shience.SetPublisher(new FilePublisher(@"C:\file\path\to\results.txt"));
+```
+//Set a publisher
+Shience.SetPublisher(new FilePublisher(@"C:\file\path\to\results.txt"));
     
-    var science = Shience.New<bool>("widget-permissions");
+var science = Shience.New<bool>("widget-permissions");
     
-    var userCanRead = science.Test(
-                                    control: (() => return UserPermissions.CheckUser(currentUser); ), 
-                                    candidate: (() => return User.Can(currentUser, Permission.Read); )
-                             );
-                             
-    if(userCanRead)
-    {
-        //do things!
-    }
+var userCanRead = science.Test(
+    control: (() => return UserPermissions.CheckUser(currentUser); ), 
+    candidate: (() => return User.Can(currentUser, Permission.Read); )
+);
+
+if(userCanRead)
+{
+    //do things!
+}
+```
                              
 Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will also compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
 
@@ -25,11 +27,11 @@ Shience will run the control (the old way) and the candidate (the new way) in ra
 Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published the rest of the data.
 
 ```csharp
-    var userCanRead = science.Test(
-                                    control: (() => return UserPermissions.CheckUser(currentUser); ), 
-                                    candidate: (() => return User.Can(currentUser, Permission.Read); ),
-                                    contexts: new[] {currentUser, "Within DisplayWidget method", DateTime.UtcNow }
-                                );
+var userCanRead = science.Test(
+    control: (() => return UserPermissions.CheckUser(currentUser); ), 
+    candidate: (() => return User.Can(currentUser, Permission.Read); ),
+    contexts: new[] {currentUser, "Within DisplayWidget method", DateTime.UtcNow }
+);
 ```
                                 
 ##Comparing
@@ -39,47 +41,49 @@ Objects can be hard to compare. You can specify how to compare them in 2 ways.
 Shience, by default, compares results using `.Equals`. You can override `Equals` and `GetHashCode` on your object and compare that way.
 
 ```csharp
-    private class TestHelper
+private class TestHelper
+{
+    public int Number { get; set; }
+
+    public override bool Equals(object obj)
     {
-        public int Number { get; set; }
-
-        public override bool Equals(object obj)
+        var otherTestHelper = obj as TestHelper;
+        if (otherTestHelper == null)
         {
-            var otherTestHelper = obj as TestHelper;
-            if (otherTestHelper == null)
-            {
-                return false;
-            }
-
-            if (otherTestHelper.Number == this.Number)
-            {
-                return true;
-            }
-
             return false;
         }
 
-        public override int GetHashCode()
+        if (otherTestHelper.Number == this.Number)
         {
-            return base.GetHashCode() ^ Number;
+            return true;
         }
+
+        return false;
     }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode() ^ Number;
+    }
+}
 ```
 
 then
 
 ```csharp
-    var result = science.Test(control: (() => { return new TestHelper {Number = 1}; }),
-                candidate: (() => { return new TestHelper {Number = 2}; }));
+var result = science.Test(
+                    control: (() => { return new TestHelper {Number = 1}; }),
+                    candidate: (() => { return new TestHelper {Number = 2}; })
+            );
 ```
 
 ###Pass in a custom `Func<>`
 You can also pass in a comparing `Func<>` to the `Test` method.
 
 ```csharp
-    var userCanRead = science.Test(
-                                    control: (() => return UserPermissions.CheckUser(currentUser); ), 
-                                    candidate: (() => return User.Can(currentUser, Permission.Read); ),
-                                    comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
-                             );
+var userCanRead = science.Test(
+                              control: (() => return UserPermissions.CheckUser(currentUser); ), 
+                              candidate: (() => return User.Can(currentUser, Permission.Read); ),
+                              comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
+                         );
 ```
