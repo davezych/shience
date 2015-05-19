@@ -10,7 +10,7 @@ namespace Shience.Test
         [TestMethod]
         public void ShienceCanInstantiateFilePublisher()
         {
-            Shience.SetPublisher(typeof(FilePublisher<>), @"D:\results.txt");
+            Shience.SetPublisher(new FilePublisher(@"D:\results.txt"));
             Exception thrownException = null;
 
             try

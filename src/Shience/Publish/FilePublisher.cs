@@ -3,7 +3,7 @@ using Shience.Result;
 
 namespace Shience.Publish
 {
-    public class FilePublisher<TResult> : IPublisher<TResult>
+    public class FilePublisher : IPublisher
     {
         private readonly string _filePath;
 
@@ -12,7 +12,7 @@ namespace Shience.Publish
             _filePath = path;
         } 
 
-        public void Publish(ExperimentResult<TResult> result)
+        public void Publish<TResult>(ExperimentResult<TResult> result)
         {
             using (var sw = new StreamWriter(_filePath, true))
             {

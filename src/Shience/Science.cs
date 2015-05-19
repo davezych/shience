@@ -8,9 +8,9 @@ namespace Shience
     public class Science<TResult>
     {
         private readonly string _testName;
-        private readonly IPublisher<TResult> _publisher;
+        private readonly IPublisher _publisher;
 
-        internal Science(string testName, IPublisher<TResult> publisher)
+        internal Science(string testName, IPublisher publisher)
         {
             _testName = testName;
             _publisher = publisher;

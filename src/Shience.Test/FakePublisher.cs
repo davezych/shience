@@ -4,9 +4,9 @@ using Shience.Result;
 
 namespace Shience.Test
 {
-    internal class FakePublisher<TResult> : IPublisher<TResult>
+    internal class FakePublisher : IPublisher
     {
-        public void Publish(ExperimentResult<TResult> result)
+        public void Publish<TResult>(ExperimentResult<TResult> result)
         {
             PublishingResults.TestNamesWithResults.Add(result.TestName, result.Matched);
         }

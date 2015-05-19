@@ -2,8 +2,8 @@
 
 namespace Shience.Publish
 {
-    public interface IPublisher<TResult>
+    public interface IPublisher
     {
-        void Publish(ExperimentResult<TResult> result);
+        void Publish<TResult>(ExperimentResult<TResult> result);
     }
 }

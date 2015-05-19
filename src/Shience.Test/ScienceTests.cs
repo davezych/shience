@@ -8,7 +8,8 @@ namespace Shience.Test
         [TestInitialize]
         public void ScienceTestsInitialize()
         {
-            Shience.SetPublisher(typeof(FakePublisher<>));
+            var fp = new FakePublisher();
+            Shience.SetPublisher(fp);
         }
 
         [TestMethod]

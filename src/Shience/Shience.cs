@@ -1,33 +1,19 @@
-﻿using System;
-using Shience.Publish;
+﻿using Shience.Publish;
 
 namespace Shience
 {
     public static class Shience
     {
-        private static Type _publisherType;
-        private static object[] _publisherArgs;
+        private static IPublisher _publisher;
 
-        public static void SetPublisher(Type publisherType, params object[] args)
+        public static void SetPublisher(IPublisher publisher)
         {
-            _publisherType = publisherType;
-            _publisherArgs = args;
+            _publisher = publisher;
         }
-
-        private static IPublisher<T> GetInstanceOfPublisher<T>()
-        {
-            if (_publisherType == null)
-            {
-                throw new ArgumentException("PublisherType");
-            }
-
-            var constructed = _publisherType.MakeGenericType(typeof (T));
-            return (IPublisher<T>) Activator.CreateInstance(constructed, _publisherArgs);
-        }
-
+        
         public static Science<TResult> New<TResult>(string name)
         {
-            return new Science<TResult>(name, GetInstanceOfPublisher<TResult>());
+            return new Science<TResult>(name, _publisher);
         }
     }
 }
