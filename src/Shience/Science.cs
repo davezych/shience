@@ -73,6 +73,11 @@ namespace Shience
 
             _publisher.Publish(experimentResult);
 
+            if (controlResult.Exception != null)
+            {
+                throw controlResult.Exception;
+            }
+
             return controlResult.Result;
         }
 
