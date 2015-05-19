@@ -132,6 +132,17 @@ namespace Shience.Test
             Assert.IsNotNull(thrownException, thrownException == null ? string.Empty : thrownException.ToString());
         }
 
+        [TestMethod]
+        public void NoTestsAreRunIfCandidateIsNull()
+        {
+            var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull");
+
+            science.Test(() => true,
+                            null);
+
+            Assert.IsFalse(PublishingResults.TestNamesWithResults.ContainsKey("NotTestsAreRunIfCandidateIsNull"));
+        }
+
         private class TestHelper
         {
             public int Number { get; set; }
