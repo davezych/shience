@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Shience.Test
 {
@@ -76,6 +77,59 @@ namespace Shience.Test
                                       comparer: (a, b) => { return a == b; });
 
             Assert.AreEqual(false, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectFalseResult"]);
+        }
+
+        [TestMethod]
+        public void InstantiatingScienceThrowsArgumentNullIfTestNameIsNull()
+        {
+            ArgumentNullException thrownException = null;
+
+            try
+            {
+                var science = Shience.New<bool>(null);
+            }
+            catch (ArgumentNullException e)
+            {
+                thrownException = e;
+            }
+
+            Assert.IsNotNull(thrownException, thrownException == null ? string.Empty : thrownException.ToString());
+        }
+
+        [TestMethod]
+        public void InstantiatingScienceThrowsArgumentNullIfTestNameIsEmptyString()
+        {
+            ArgumentNullException thrownException = null;
+
+            try
+            {
+                var science = Shience.New<bool>(string.Empty);
+            }
+            catch (ArgumentNullException e)
+            {
+                thrownException = e;
+            }
+
+            Assert.IsNotNull(thrownException, thrownException == null ? string.Empty : thrownException.ToString());
+        }
+
+        [TestMethod]
+        public void InstantiatingScienceThrowsArgumentNullIfPublisherIsNull()
+        {
+            Shience.SetPublisher(null);
+
+            ArgumentNullException thrownException = null;
+
+            try
+            {
+                var science = Shience.New<bool>(string.Empty);
+            }
+            catch (ArgumentNullException e)
+            {
+                thrownException = e;
+            }
+
+            Assert.IsNotNull(thrownException, thrownException == null ? string.Empty : thrownException.ToString());
         }
 
         private class TestHelper
