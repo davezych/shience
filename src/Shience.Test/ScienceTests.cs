@@ -143,6 +143,25 @@ namespace Shience.Test
             Assert.IsFalse(PublishingResults.TestNamesWithResults.ContainsKey("NotTestsAreRunIfCandidateIsNull"));
         }
 
+        [TestMethod]
+        public void ArgumentNullIsThrownIfControlIsNull()
+        {
+            ArgumentNullException thrownException = null;
+
+            var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull");
+
+            try
+            {
+                science.Test(null, null);
+            }
+            catch (ArgumentNullException e)
+            {
+                thrownException = e;
+            }
+
+            Assert.IsNotNull(thrownException);
+        }
+
         private class TestHelper
         {
             public int Number { get; set; }
