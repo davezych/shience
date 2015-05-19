@@ -24,7 +24,7 @@ if(userCanRead)
 Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will also compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
 
 ##Context
-Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published the rest of the data.
+Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published with the rest of the data.
 
 ```csharp
 var userCanRead = science.Test(
@@ -72,9 +72,9 @@ then
 
 ```csharp
 var result = science.Test(
-                    control: (() => { return new TestHelper {Number = 1}; }),
-                    candidate: (() => { return new TestHelper {Number = 2}; })
-            );
+                        control: (() => { return new TestHelper {Number = 1}; }),
+                        candidate: (() => { return new TestHelper {Number = 2}; })
+                    );
 ```
 
 ###Pass in a custom `Func<>`
