@@ -12,6 +12,15 @@ namespace Shience
 
         internal Science(string testName, IPublisher publisher)
         {
+            if (string.IsNullOrWhiteSpace(testName))
+            {
+                throw new ArgumentNullException("testName");
+            }
+            if (publisher == null)
+            {
+                throw new ArgumentNullException("publisher");
+            }
+
             _testName = testName;
             _publisher = publisher;
         }
