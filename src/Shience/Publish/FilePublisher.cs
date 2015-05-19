@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text;
 using Shience.Result;
 
 namespace Shience.Publish
@@ -14,10 +16,36 @@ namespace Shience.Publish
 
         public void Publish<TResult>(ExperimentResult<TResult> result)
         {
+            var sb = new StringBuilder();
+
+            sb.Append(DateTime.UtcNow);
+            sb.Append("|");
+            sb.Append(result.TestName);
+            sb.Append("|");
+            sb.Append(result.ControlResult.Result);
+            sb.Append("|");
+            sb.Append(result.ControlResult.RunTime);
+            sb.Append("|");
+            sb.Append(result.CandidateResult.Result);
+            sb.Append("|");
+            sb.Append(result.CandidateResult.RunTime);
+            sb.Append("|");
+            sb.Append(result.Matched);
+            sb.Append("|");
+            sb.Append(result.Contexts);
+            sb.Append("|");
+            sb.Append(result.ControlResult.Exception);
+            sb.Append("|");
+            sb.Append(result.CandidateResult.Exception);
+
+            foreach (var item in result.Contexts)
+            {
+                sb.Append(item);
+            }
+
             using (var sw = new StreamWriter(_filePath, true))
             {
-                //TODO: Need to add exception (if any) to publishing
-                sw.WriteLine(result.TestName + "|" + result.ControlResult.Result + "|" + result.ControlResult.RunTime + "|" + result.CandidateResult.Result + "|" + result.CandidateResult.RunTime + "|" + result.Matched);
+                sw.WriteLine(sb.ToString());
             }
         }
     }
