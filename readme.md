@@ -24,11 +24,13 @@ Shience will run the control (the old way) and the candidate (the new way) in ra
 ##Context
 Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published the rest of the data.
 
+```csharp
     var userCanRead = science.Test(
                                     control: (() => return UserPermissions.CheckUser(currentUser); ), 
                                     candidate: (() => return User.Can(currentUser, Permission.Read); ),
                                     contexts: new[] {currentUser, "Within DisplayWidget method", DateTime.UtcNow }
                                 );
+```
                                 
 ##Comparing
 Objects can be hard to compare. You can specify how to compare them in 2 ways.
@@ -36,6 +38,7 @@ Objects can be hard to compare. You can specify how to compare them in 2 ways.
 ###Override `Equals`
 Shience, by default, compares results using `.Equals`. You can override `Equals` and `GetHashCode` on your object and compare that way.
 
+```csharp
     private class TestHelper
     {
         public int Number { get; set; }
@@ -61,17 +64,22 @@ Shience, by default, compares results using `.Equals`. You can override `Equals`
             return base.GetHashCode() ^ Number;
         }
     }
+```
 
 then
 
+```csharp
     var result = science.Test(control: (() => { return new TestHelper {Number = 1}; }),
                 candidate: (() => { return new TestHelper {Number = 2}; }));
+```
 
 ###Pass in a custom `Func<>`
 You can also pass in a comparing `Func<>` to the `Test` method.
 
+```csharp
     var userCanRead = science.Test(
                                     control: (() => return UserPermissions.CheckUser(currentUser); ), 
                                     candidate: (() => return User.Can(currentUser, Permission.Read); ),
                                     comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
-                             )
+                             );
+```
