@@ -37,6 +37,11 @@ namespace Shience
 
         public TResult Test(Func<TResult> control, Func<TResult> candidate, Func<TResult, TResult, bool> comparer, params object[] contexts)
         {
+            if (control == null)
+            {
+                throw new ArgumentNullException("control");
+            }
+
             //If candidate is null, don't do any science
             if (candidate == null)
             {
