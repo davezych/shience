@@ -122,7 +122,7 @@ namespace Shience.Test
 
             try
             {
-                var science = Shience.New<bool>(string.Empty);
+                var science = Shience.New<bool>("InstantiatingScienceThrowsArgumentNullIfPublisherIsNull");
             }
             catch (ArgumentNullException e)
             {
@@ -152,7 +152,7 @@ namespace Shience.Test
 
             try
             {
-                science.Test(null, null);
+                science.Test(null, () => true);
             }
             catch (ArgumentNullException e)
             {
@@ -169,12 +169,8 @@ namespace Shience.Test
             public override bool Equals(object obj)
             {
                 var otherTestHelper = obj as TestHelper;
-                if (otherTestHelper == null)
-                {
-                    return false;
-                }
 
-                if (otherTestHelper.Number == this.Number)
+                if (otherTestHelper?.Number == this.Number)
                 {
                     return true;
                 }
