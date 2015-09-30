@@ -37,12 +37,9 @@ namespace Shience.Publish
             sb.Append(result.ControlResult.Exception);
             sb.Append("|");
             sb.Append(result.CandidateResult.Exception);
-
-            foreach (var item in result.Contexts)
-            {
-                sb.Append(item);
-            }
-
+            sb.Append("|");
+            sb.Append(string.Join(";", result.Contexts));
+            
             using (var sw = new StreamWriter(_filePath, true))
             {
                 sw.WriteLine(sb.ToString());
