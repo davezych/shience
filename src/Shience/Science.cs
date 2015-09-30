@@ -14,11 +14,11 @@ namespace Shience
         {
             if (string.IsNullOrWhiteSpace(testName))
             {
-                throw new ArgumentNullException("testName");
+                throw new ArgumentNullException(nameof(testName));
             }
             if (publisher == null)
             {
-                throw new ArgumentNullException("publisher");
+                throw new ArgumentNullException(nameof(publisher));
             }
 
             _testName = testName;
@@ -39,7 +39,7 @@ namespace Shience
         {
             if (control == null)
             {
-                throw new ArgumentNullException("control");
+                throw new ArgumentNullException(nameof(control));
             }
 
             //If candidate is null, don't do any science
