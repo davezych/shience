@@ -40,7 +40,8 @@ namespace Shience.Publish
             sb.Append("|");
             sb.Append(string.Join(";", result.Contexts));
             
-            using (var sw = new StreamWriter(_filePath, true))
+            using(var fs = new FileStream(_filePath, FileMode.Append))
+            using (var sw = new StreamWriter(fs))
             {
                 sw.WriteLine(sb.ToString());
             }
