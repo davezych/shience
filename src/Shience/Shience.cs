@@ -2,7 +2,7 @@
 
 namespace Shience
 {
-    public static class Sciencer
+    public static class Shience
     {
         private static IPublisher _publisher;
 

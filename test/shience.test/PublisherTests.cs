@@ -8,9 +8,9 @@ namespace Shience.Test
         [Fact]
         public void ShienceCanInstantiateWithPublisher()
         {
-            Sciencer.SetPublisher(new FakePublisher());
+            Shience.SetPublisher(new FakePublisher());
 
-            var science = Sciencer.New<bool>("ShienceCanInstantiateFilePublisher");
+            var science = Shience.New<bool>("ShienceCanInstantiateFilePublisher");
 
             Assert.NotNull(science);
         }

@@ -9,13 +9,13 @@ namespace Shience.Test
         public ShienceTests()
         {
             var fp = new FakePublisher();
-            Sciencer.SetPublisher(fp);
+            Shience.SetPublisher(fp);
         }
 
         [Fact]
         public void DefaultComparerReturnsTrueWithSameResultOnPrimitives()
         {
-            var science = Sciencer.New<bool>("DefaultComparerReturnsTrueWithSameResultOnPrimitives");
+            var science = Shience.New<bool>("DefaultComparerReturnsTrueWithSameResultOnPrimitives");
 
             var result = science.Test(control: (() => { return true; }), candidate: (() => { return true; }));
 
@@ -25,7 +25,7 @@ namespace Shience.Test
         [Fact]
         public void DefaultComparerReturnsFalseWithDifferentResultOnPrimitives()
         {
-            var science = Sciencer.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives");
+            var science = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives");
 
             var result = science.Test(control: (() => { return true; }), candidate: (() => { return false; }));
 
@@ -35,7 +35,7 @@ namespace Shience.Test
         [Fact]
         public void DefaultComparerReturnsTrueWithSameResultOnObject()
         {
-            var science = Sciencer.New<TestHelper>("DefaultComparerReturnsTrueWithSameResultOnObject");
+            var science = Shience.New<TestHelper>("DefaultComparerReturnsTrueWithSameResultOnObject");
 
             var result = science.Test(control: (() => { return new TestHelper { Number = 1 }; }),
                 candidate: (() => { return new TestHelper { Number = 1 }; }));
@@ -46,7 +46,7 @@ namespace Shience.Test
         [Fact]
         public void DefaultComparerReturnsFalseWithDifferentResultOnObject()
         {
-            var science = Sciencer.New<TestHelper>("DefaultComparerReturnsFalseWithDifferentResultOnObject");
+            var science = Shience.New<TestHelper>("DefaultComparerReturnsFalseWithDifferentResultOnObject");
 
             var result = science.Test(control: (() => { return new TestHelper { Number = 1 }; }),
                 candidate: (() => { return new TestHelper { Number = 2 }; }));
@@ -57,7 +57,7 @@ namespace Shience.Test
         [Fact]
         public void ComparerFuncReturnsCorrectTrueResult()
         {
-            var science = Sciencer.New<bool>("ComparerFuncReturnsCorrectTrueResult");
+            var science = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult");
 
             var result = science.Test(control: (() => { return true; }),
                                       candidate: (() => { return true; }),
@@ -69,7 +69,7 @@ namespace Shience.Test
         [Fact]
         public void ComparerFuncReturnsCorrectFalseResult()
         {
-            var science = Sciencer.New<bool>("ComparerFuncReturnsCorrectFalseResult");
+            var science = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult");
 
             var result = science.Test(control: (() => { return true; }),
                                       candidate: (() => { return false; }),
@@ -81,27 +81,27 @@ namespace Shience.Test
         [Fact]
         public void InstantiatingScienceThrowsArgumentNullIfTestNameIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => Sciencer.New<bool>(null));
+            Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(null));
         }
 
         [Fact]
         public void InstantiatingScienceThrowsArgumentNullIfTestNameIsEmptyString()
         {
-            Assert.Throws<ArgumentNullException>(() => Sciencer.New<bool>(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(string.Empty));
         }
 
         [Fact]
         public void InstantiatingScienceThrowsArgumentNullIfPublisherIsNull()
         {
-            Sciencer.SetPublisher(null);
+            Shience.SetPublisher(null);
 
-            Assert.Throws<ArgumentNullException>(() => Sciencer.New<bool>("InstantiatingScienceThrowsArgumentNullIfPublisherIsNull"));
+            Assert.Throws<ArgumentNullException>(() => Shience.New<bool>("InstantiatingScienceThrowsArgumentNullIfPublisherIsNull"));
         }
 
         [Fact]
         public void NoTestsAreRunIfCandidateIsNull()
         {
-            var science = Sciencer.New<bool>("NotTestsAreRunIfCandidateIsNull");
+            var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull");
 
             science.Test(() => true, null);
 
@@ -111,7 +111,7 @@ namespace Shience.Test
         [Fact]
         public void ArgumentNullIsThrownIfControlIsNull()
         {
-            var science = Sciencer.New<bool>("ArgumentNullIsThrownIfControlIsNull");
+            var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull");
 
             Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true));
         }
