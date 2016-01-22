@@ -98,3 +98,9 @@ var result = await science.TestAsync(
                                   candidate: (() => { Thread.Sleep(5000); return true; }),
                               );
 ```
+
+##Designing an experiment
+
+Due to the fact that both the control *and* candidate have the possibility of running, Shience **should not** be used to test **write** operations. If Shience is set up to run a write operation, it's entirely possible that the write could happen twice (which is probably not wanted). 
+
+It's best to only do science on read operations. 
