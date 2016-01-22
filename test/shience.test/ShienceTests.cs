@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Shience.Test.Fakes;
 using Xunit;
 
@@ -114,6 +116,19 @@ namespace Shience.Test
             var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull");
 
             Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true));
+        }
+
+        [Fact]
+        public async Task TestsAreRunInParallel()
+        {
+            var science = Shience.New<bool>("TestsAreRunInParallel");
+
+            var output = string.Empty;
+
+            var result = await science.TestAsync(() => { Thread.Sleep(1000); output = "Control"; return true; },
+                () => { Thread.Sleep(10); output = "Candidate"; return true; });
+
+            Assert.Equal("Control", output);
         }
 
         private class TestHelper

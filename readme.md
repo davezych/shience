@@ -87,3 +87,14 @@ var userCanRead = science.Test(
                               comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
                          );
 ```
+
+##Async
+
+Tests can be run in parallel using the `TestAsync` method. When run in parallel the order in which they start is no longer randomized. To run tests in parallel, `await` the `TestAsync` method:
+
+```csharp
+var result = await science.TestAsync(
+                                  control: (() => { Thread.Sleep(5000); return true; }),
+                                  candidate: (() => { Thread.Sleep(5000); return true; }),
+                              );
+```
