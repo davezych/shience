@@ -12,7 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "shience", "src\shience\shience.xproj", "{0AE508FE-087F-4609-9608-8D05C9E11ABC}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Shience", "src\shience\Shience.xproj", "{0AE508FE-087F-4609-9608-8D05C9E11ABC}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Shience.Test", "test\shience.test\Shience.Test.xproj", "{38FB7DA9-9FF2-4A53-A1D6-854CBC44F4FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,11 +26,16 @@ Global
 		{0AE508FE-087F-4609-9608-8D05C9E11ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AE508FE-087F-4609-9608-8D05C9E11ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AE508FE-087F-4609-9608-8D05C9E11ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38FB7DA9-9FF2-4A53-A1D6-854CBC44F4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FB7DA9-9FF2-4A53-A1D6-854CBC44F4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FB7DA9-9FF2-4A53-A1D6-854CBC44F4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FB7DA9-9FF2-4A53-A1D6-854CBC44F4FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-    GlobalSection(NestedProjects) = preSolution
+	GlobalSection(NestedProjects) = preSolution
 		{0AE508FE-087F-4609-9608-8D05C9E11ABC} = {AE98F83F-7AFF-45EF-A3B8-C602BBA84D1D}
+		{38FB7DA9-9FF2-4A53-A1D6-854CBC44F4FD} = {8950FCD4-7B19-484F-9E09-A5CD76DB10DB}
 	EndGlobalSection
 EndGlobal
