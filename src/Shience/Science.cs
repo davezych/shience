@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Shience.Publish;
 using Shience.Result;
 
@@ -112,6 +113,86 @@ namespace Shience
         private TResult Run(Func<TResult> action)
         {
             return action();
+        }
+
+        public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate)
+        {
+            return await TestAsync(control, candidate, null, null);
+        }
+
+        public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate, params object[] contexts)
+        {
+            return await TestAsync(control, candidate, null, contexts);
+        }
+
+        public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate, Func<TResult, TResult, bool> comparer, params object[] contexts)
+        {
+            if (control == null)
+            {
+                throw new ArgumentNullException(nameof(control));
+            }
+
+            //If candidate is null, don't do any science
+            if (candidate == null)
+            {
+                return await RunAsync(control);
+            }
+
+            var experimentResult = new ExperimentResult<TResult>
+            {
+                TestName = _testName,
+                ComparerFunc = comparer,
+            };
+
+            if (contexts != null)
+            {
+                experimentResult.Contexts.AddRange(contexts);
+            }
+
+            var controlTask = InternalTestAsync(control);
+            var candidateTask = InternalTestAsync(candidate);
+
+            experimentResult.ControlResult = await controlTask;
+            experimentResult.CandidateResult = await candidateTask;
+
+            _publisher.Publish(experimentResult);
+
+            if (experimentResult.ControlResult.Exception != null)
+            {
+                throw experimentResult.ControlResult.Exception;
+            }
+
+            return experimentResult.ControlResult.Result;
+        }
+
+        private async Task<TestResult<TResult>> InternalTestAsync(Func<TResult> action)
+        {
+            var tr = new TestResult<TResult>();
+            var sw = new Stopwatch();
+
+            sw.Start();
+
+            try
+            {
+                var result = RunAsync(action);
+                tr.Result = await result;
+            }
+            catch (Exception e)
+            {
+                tr.Exception = e;
+            }
+
+            sw.Stop();
+
+            tr.RunTime = sw.ElapsedMilliseconds;
+            return tr;
+        }
+
+        private async Task<TResult> RunAsync(Func<TResult> action)
+        {
+            var result = await Task.Run<TResult>(action);
+
+            return result;
         }
     }
 }
