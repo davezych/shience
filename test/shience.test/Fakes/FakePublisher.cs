@@ -2,7 +2,7 @@
 using Shience.Publish;
 using Shience.Result;
 
-namespace Shience.Test
+namespace Shience.Test.Fakes
 {
     internal class FakePublisher : IPublisher
     {
