@@ -46,7 +46,7 @@ namespace Shience
             //If candidate is null, don't do any science
             if (candidate == null)
             {
-                return Run(control);
+                return RunAsync(control).Result;
             }
 
             var experimentResult = new ExperimentResult<TResult>
@@ -65,13 +65,13 @@ namespace Shience
             if (new Random().Next()%2 == 0)
             {
                 experimentResult.ControlRanFirst = true;
-                controlResult = InternalTest(control);
-                candidateResult = InternalTest(candidate);
+                controlResult = InternalTestAsync(control).Result;
+                candidateResult = InternalTestAsync(candidate).Result;
             }
             else
             {
-                candidateResult = InternalTest(candidate);
-                controlResult = InternalTest(control);
+                candidateResult = InternalTestAsync(candidate).Result;
+                controlResult = InternalTestAsync(control).Result;
             }
 
             experimentResult.ControlResult = controlResult;
@@ -85,34 +85,6 @@ namespace Shience
             }
 
             return controlResult.Result;
-        }
-
-        private TestResult<TResult> InternalTest(Func<TResult> action)
-        {
-            var tr = new TestResult<TResult>();
-            var sw = new Stopwatch();
-
-            sw.Start();
-
-            try
-            {
-                var result = Run(action);
-                tr.Result = result;
-            }
-            catch (Exception e)
-            {
-                tr.Exception = e;
-            }
-
-            sw.Stop();
-
-            tr.RunTime = sw.ElapsedMilliseconds;
-            return tr;
-        }
-
-        private TResult Run(Func<TResult> action)
-        {
-            return action();
         }
 
         public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate)
