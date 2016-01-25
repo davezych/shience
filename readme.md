@@ -101,6 +101,12 @@ public class MyPublisher : IPublisher
 }
 ```
 
+And once written, set the publisher in Shience setup:
+
+```csharp
+Shience.Shience.SetPublisher(new MyPublisher());
+```
+
 ##Async
 
 Tests can be run in parallel using the `TestAsync` method. When run in parallel the order in which they start is no longer randomized. To run tests in parallel, `await` the `TestAsync` method:
