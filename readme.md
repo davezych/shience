@@ -2,7 +2,7 @@
 A C# library for carefully refactoring critical paths. It's a .NET port(ish) of Github's Scientist library. (https://github.com/github/scientist)
 
 ##How do I do science?
-Let's pretend you're doing the same thing as in Scientist's example and are changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
+Let's pretend you're changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
 ```csharp
 //Set a publisher
@@ -86,6 +86,19 @@ var userCanRead = science.Test(
                               candidate: (() => return User.Can(currentUser, Permission.Read); ),
                               comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
                          );
+```
+
+##Writing your own Publisher
+To write your own custom publisher (to write to a database, or send to a service or whatever) implement `IPublisher`:
+
+```csharp
+public class MyPublisher : IPublisher
+{
+    public void Publish<TResult>(ExperimentResult<TResult> result)
+    {
+        //Write results somewhere
+    }
+}
 ```
 
 ##Async
