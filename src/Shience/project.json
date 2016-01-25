@@ -1,11 +1,12 @@
 ﻿{
-  "version": "1.0.0-*",
-  "description": "shience Class Library",
+  "version": "1.0.0-beta1",
+  "description": "A library for carefully refactoring critical paths",
   "authors": [ "david.zych" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
-
+  "owners": [ "david.zych" ],
+  "tags": [ "Refactoring", "Science", "critical path" ],
+  "projectUrl": "https://github.com/davezych/shience",
+  "licenseUrl": "https://opensource.org/licenses/MIT",
+  "copyright": "Copyright (c) 2016 Dave Zych",
   "frameworks": {
     "dnxcore50": {
       "dependencies": {
