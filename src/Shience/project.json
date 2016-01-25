@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-beta2",
   "title": "Shience",
   "description": "A library for carefully refactoring critical paths",
   "authors": [ "david.zych" ],
@@ -18,6 +18,7 @@
         "System.Collections": "4.0.11-rc2-23706",
         "System.Runtime.Extensions": "4.0.11-rc2-23629"
       }
-    }
+    },
+    "dnx451": { }
   }
 }
