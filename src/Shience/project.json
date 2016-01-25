@@ -1,5 +1,6 @@
 ﻿{
   "version": "1.0.0-beta1",
+  "title": "Shience",
   "description": "A library for carefully refactoring critical paths",
   "authors": [ "david.zych" ],
   "owners": [ "david.zych" ],
