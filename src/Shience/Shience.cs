@@ -18,7 +18,7 @@ namespace Shience
             _publisher = publisher;
         }
         
-        public static Science New([NotNull]string name)
+        public static Science<TResult> New<TResult>([NotNull]string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -31,10 +31,10 @@ namespace Shience
                 throw new InvalidOperationException("Call Shience.SetPublisher([NotNull]IPublisher publisher) first.");
             }
 
-            return new Science(name, _publisher);
+            return new Science<TResult>(name, _publisher);
         }
 
-        public static Science New([NotNull]string name, [NotNull]IPublisher publisher)
+        public static Science<TResult> New<TResult>([NotNull]string name, [NotNull]IPublisher publisher)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -46,7 +46,7 @@ namespace Shience
                 throw new ArgumentNullException(nameof(publisher));
             }
 
-            return new Science(name, publisher);
+            return new Science<TResult>(name, publisher);
         }
     }
 }
