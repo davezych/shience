@@ -5,6 +5,7 @@
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
+
   "frameworks": {
     "dnxcore50": {
       "dependencies": {
@@ -14,14 +15,12 @@
         "System.Runtime": "4.0.21-beta-23516",
         "System.Threading": "4.0.11-beta-23516",
         "xunit": "2.1.0",
-        "xunit.runner.dnx": "2.1.0-rc2-build209"
+        "xunit.runner.dnx": "2.1.0-rc2-build209",
+        "shience": "1.0.0-*"
       }
     }
   },
   "commands": {
     "test": "xunit.runner.dnx"
-  },
-  "dependencies": {
-    "shience": "1.0.0-beta2"
   }
 }
