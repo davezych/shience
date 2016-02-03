@@ -19,7 +19,7 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("DefaultComparerReturnsTrueWithSameResultOnPrimitives");
 
-            var result = science.Test(control: (() => { return true; }), candidate: (() => { return true; }));
+            var result = science.Test(control: () => true, candidate: () => true);
 
             Assert.Equal(true, PublishingResults.TestNamesWithResults["DefaultComparerReturnsTrueWithSameResultOnPrimitives"]);
         }
@@ -29,7 +29,7 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives");
 
-            var result = science.Test(control: (() => { return true; }), candidate: (() => { return false; }));
+            var result = science.Test(control: () => true, candidate: () => false);
 
             Assert.Equal(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnPrimitives"]);
         }
@@ -37,10 +37,11 @@ namespace Shience.Test
         [Fact]
         public void DefaultComparerReturnsTrueWithSameResultOnObject()
         {
-            var science = Shience.New<TestHelper>("DefaultComparerReturnsTrueWithSameResultOnObject");
+            var science = Shience.New<TestNumber>("DefaultComparerReturnsTrueWithSameResultOnObject");
 
-            var result = science.Test(control: (() => { return new TestHelper { Number = 1 }; }),
-                candidate: (() => { return new TestHelper { Number = 1 }; }));
+            var result = science.Test(
+                control: () => new TestNumber(1),
+                candidate: () => new TestNumber(1));
 
             Assert.Equal(true, PublishingResults.TestNamesWithResults["DefaultComparerReturnsTrueWithSameResultOnObject"]);
         }
@@ -48,10 +49,11 @@ namespace Shience.Test
         [Fact]
         public void DefaultComparerReturnsFalseWithDifferentResultOnObject()
         {
-            var science = Shience.New<TestHelper>("DefaultComparerReturnsFalseWithDifferentResultOnObject");
+            var science = Shience.New<TestNumber>("DefaultComparerReturnsFalseWithDifferentResultOnObject");
 
-            var result = science.Test(control: (() => { return new TestHelper { Number = 1 }; }),
-                candidate: (() => { return new TestHelper { Number = 2 }; }));
+            var result = science.Test(
+                control: () => new TestNumber(1),
+                candidate: () => new TestNumber(2));
 
             Assert.Equal(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnObject"]);
         }
@@ -61,9 +63,9 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult");
 
-            var result = science.Test(control: (() => { return true; }),
-                                      candidate: (() => { return true; }),
-                                      comparer: (a, b) => { return a == b; });
+            var result = science.Test(control: () => true,
+                                      candidate: () => true,
+                                      comparer: (a, b) => a == b);
 
             Assert.Equal(true, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectTrueResult"]);
         }
@@ -73,9 +75,9 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult");
 
-            var result = science.Test(control: (() => { return true; }),
-                                      candidate: (() => { return false; }),
-                                      comparer: (a, b) => { return a == b; });
+            var result = science.Test(control: () => true,
+                                      candidate: () => false,
+                                      comparer: (a, b) => a == b);
 
             Assert.Equal(false, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectFalseResult"]);
         }
@@ -131,25 +133,25 @@ namespace Shience.Test
             Assert.Equal("Control", output);
         }
 
-        private class TestHelper
+        internal sealed class TestNumber
         {
-            public int Number { get; set; }
+            public TestNumber(int number)
+            {
+                Number = number;
+            }
+
+            private int Number { get; }
 
             public override bool Equals(object obj)
             {
-                var otherTestHelper = obj as TestHelper;
+                var otherTestHelper = obj as TestNumber;
 
-                if (otherTestHelper?.Number == this.Number)
-                {
-                    return true;
-                }
-
-                return false;
+                return otherTestHelper?.Number == Number;
             }
 
             public override int GetHashCode()
             {
-                return base.GetHashCode() ^ Number;
+                return Number.GetHashCode();
             }
         }
     }
