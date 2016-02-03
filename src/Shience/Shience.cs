@@ -33,5 +33,20 @@ namespace Shience
 
             return new Science(name, _publisher);
         }
+
+        public static Science New([NotNull]string name, [NotNull]IPublisher publisher)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (publisher == null)
+            {
+                throw new ArgumentNullException(nameof(publisher));
+            }
+
+            return new Science(name, publisher);
+        }
     }
 }
