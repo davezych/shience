@@ -11,6 +11,11 @@ namespace Shience
         private readonly string _testName;
         private readonly IPublisher _publisher;
 
+        private Func<TResult> _control;
+        private Func<TResult> _candidate;
+        private Func<TResult, TResult, bool> _comparer;
+        private object[] _contexts;
+
         internal Science(string testName, IPublisher publisher)
         {
             if (string.IsNullOrWhiteSpace(testName))
@@ -26,52 +31,64 @@ namespace Shience
             _publisher = publisher;
         }
 
-        public TResult Test(Func<TResult> control, Func<TResult> candidate)
+        public Science<TResult> Test(Func<TResult> control, Func<TResult> candidate)
         {
-            return Test(control, candidate, null, null);
+            _control = control;
+            _candidate = candidate;
+
+            return this;
         }
 
-        public TResult Test(Func<TResult> control, Func<TResult> candidate, params object[] contexts)
+        public Science<TResult> WithComparer(Func<TResult, TResult, bool> comparer)
         {
-            return Test(control, candidate, null, contexts);
+            _comparer = comparer;
+
+            return this;
         }
 
-        public TResult Test(Func<TResult> control, Func<TResult> candidate, Func<TResult, TResult, bool> comparer, params object[] contexts)
+        public Science<TResult> WithContext(params object[] contexts)
         {
-            if (control == null)
+            _contexts = contexts;
+
+            return this;
+        }
+
+        public TResult Execute()
+        {
+            if (_control == null)
             {
-                throw new ArgumentNullException(nameof(control));
+                throw new ArgumentNullException(nameof(_control));
             }
 
             //If candidate is null, don't do any science
-            if (candidate == null)
+            if (_candidate == null)
             {
-                return RunAsync(control).Result;
+                return RunAsync(_control).Result;
             }
-
+         
             var experimentResult = new ExperimentResult<TResult>
             {
                 TestName = _testName,
-                ComparerFunc = comparer,
+                ComparerFunc = _comparer,
             };
 
-            if (contexts != null)
+            if (_contexts != null)
             {
-                experimentResult.Contexts.AddRange(contexts);
+                experimentResult.Contexts.AddRange(_contexts);
             }
 
             TestResult<TResult> controlResult, candidateResult;
 
-            if (new Random().Next()%2 == 0)
+            if (new Random().Next() % 2 == 0)
             {
                 experimentResult.ControlRanFirst = true;
-                controlResult = InternalTestAsync(control).Result;
-                candidateResult = InternalTestAsync(candidate).Result;
+                controlResult = InternalTestAsync(_control).Result;
+                candidateResult = InternalTestAsync(_candidate).Result;
             }
             else
             {
-                candidateResult = InternalTestAsync(candidate).Result;
-                controlResult = InternalTestAsync(control).Result;
+                candidateResult = InternalTestAsync(_candidate).Result;
+                controlResult = InternalTestAsync(_control).Result;
             }
 
             experimentResult.ControlResult = controlResult;
@@ -87,42 +104,32 @@ namespace Shience
             return controlResult.Result;
         }
 
-        public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate)
+        public async Task<TResult> ExecuteAsync()
         {
-            return await TestAsync(control, candidate, null, null);
-        }
-
-        public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate, params object[] contexts)
-        {
-            return await TestAsync(control, candidate, null, contexts);
-        }
-
-        public async Task<TResult> TestAsync(Func<TResult> control, Func<TResult> candidate, Func<TResult, TResult, bool> comparer, params object[] contexts)
-        {
-            if (control == null)
+            if (_control == null)
             {
-                throw new ArgumentNullException(nameof(control));
+                throw new ArgumentNullException(nameof(_control));
             }
 
             //If candidate is null, don't do any science
-            if (candidate == null)
+            if (_candidate == null)
             {
-                return await RunAsync(control);
+                return RunAsync(_control).Result;
             }
 
             var experimentResult = new ExperimentResult<TResult>
             {
                 TestName = _testName,
-                ComparerFunc = comparer,
+                ComparerFunc = _comparer,
             };
 
-            if (contexts != null)
+            if (_contexts != null)
             {
-                experimentResult.Contexts.AddRange(contexts);
+                experimentResult.Contexts.AddRange(_contexts);
             }
 
-            var controlTask = InternalTestAsync(control);
-            var candidateTask = InternalTestAsync(candidate);
+            var controlTask = InternalTestAsync(_control);
+            var candidateTask = InternalTestAsync(_candidate);
 
             experimentResult.ControlResult = await controlTask;
             experimentResult.CandidateResult = await candidateTask;
@@ -136,7 +143,7 @@ namespace Shience
 
             return experimentResult.ControlResult.Result;
         }
-
+        
         private async Task<TestResult<TResult>> InternalTestAsync(Func<TResult> action)
         {
             var tr = new TestResult<TResult>();

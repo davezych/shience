@@ -19,7 +19,7 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("DefaultComparerReturnsTrueWithSameResultOnPrimitives");
 
-            var result = science.Test(control: (() => { return true; }), candidate: (() => { return true; }));
+            var result = science.Test(control: (() => { return true; }), candidate: (() => { return true; })).Execute();
 
             Assert.Equal(true, PublishingResults.TestNamesWithResults["DefaultComparerReturnsTrueWithSameResultOnPrimitives"]);
         }
@@ -29,7 +29,7 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives");
 
-            var result = science.Test(control: (() => { return true; }), candidate: (() => { return false; }));
+            var result = science.Test(control: (() => { return true; }), candidate: (() => { return false; })).Execute();
 
             Assert.Equal(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnPrimitives"]);
         }
@@ -40,7 +40,7 @@ namespace Shience.Test
             var science = Shience.New<TestHelper>("DefaultComparerReturnsTrueWithSameResultOnObject");
 
             var result = science.Test(control: (() => { return new TestHelper { Number = 1 }; }),
-                candidate: (() => { return new TestHelper { Number = 1 }; }));
+                candidate: (() => { return new TestHelper { Number = 1 }; })).Execute();
 
             Assert.Equal(true, PublishingResults.TestNamesWithResults["DefaultComparerReturnsTrueWithSameResultOnObject"]);
         }
@@ -51,7 +51,7 @@ namespace Shience.Test
             var science = Shience.New<TestHelper>("DefaultComparerReturnsFalseWithDifferentResultOnObject");
 
             var result = science.Test(control: (() => { return new TestHelper { Number = 1 }; }),
-                candidate: (() => { return new TestHelper { Number = 2 }; }));
+                candidate: (() => { return new TestHelper { Number = 2 }; })).Execute();
 
             Assert.Equal(false, PublishingResults.TestNamesWithResults["DefaultComparerReturnsFalseWithDifferentResultOnObject"]);
         }
@@ -62,8 +62,9 @@ namespace Shience.Test
             var science = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult");
 
             var result = science.Test(control: (() => { return true; }),
-                                      candidate: (() => { return true; }),
-                                      comparer: (a, b) => { return a == b; });
+                                      candidate: (() => { return true; }))
+                                .WithComparer(comparer: (a, b) => { return a == b; })
+                                .Execute();
 
             Assert.Equal(true, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectTrueResult"]);
         }
@@ -74,8 +75,9 @@ namespace Shience.Test
             var science = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult");
 
             var result = science.Test(control: (() => { return true; }),
-                                      candidate: (() => { return false; }),
-                                      comparer: (a, b) => { return a == b; });
+                                      candidate: (() => { return false; }))
+                                .WithComparer(comparer: (a, b) => { return a == b; })
+                                .Execute();
 
             Assert.Equal(false, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectFalseResult"]);
         }
@@ -105,7 +107,7 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull");
 
-            science.Test(() => true, null);
+            science.Test(() => true, null).Execute();
 
             Assert.False(PublishingResults.TestNamesWithResults.ContainsKey("NotTestsAreRunIfCandidateIsNull"));
         }
@@ -115,7 +117,7 @@ namespace Shience.Test
         {
             var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull");
 
-            Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true));
+            Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true).Execute());
         }
 
         [Fact]
@@ -125,8 +127,10 @@ namespace Shience.Test
 
             var output = string.Empty;
 
-            var result = await science.TestAsync(() => { Thread.Sleep(1000); output = "Control"; return true; },
-                () => { Thread.Sleep(10); output = "Candidate"; return true; });
+            var result = await science.Test(
+                                            () => { Thread.Sleep(1000); output = "Control"; return true; },
+                                            () => { Thread.Sleep(10); output = "Candidate"; return true; })
+                                      .ExecuteAsync();
 
             Assert.Equal("Control", output);
         }
