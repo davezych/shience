@@ -1,8 +1,8 @@
 ﻿{
-  "version": "0.0.1",
+  "version": "0.0.1-beta3",
   "title": "Shience",
   "description": "A library for carefully refactoring critical paths",
-  "authors": [ "david.zych" ],
+  "authors": [ "david.zych", "Johann Dirry <movgp0@gmail.com>" ],
   "owners": [ "david.zych" ],
   "tags": [ "Refactoring", "Science", "critical path" ],
   "projectUrl": "https://github.com/davezych/shience",
