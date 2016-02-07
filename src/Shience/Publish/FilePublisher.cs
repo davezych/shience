@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Shience.Result;
 
 namespace Shience.Publish
 {
-    public class FilePublisher : IPublisher
+    public sealed class FilePublisher : IPublisher
     {
         private readonly string _filePath;
 

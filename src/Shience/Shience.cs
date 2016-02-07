@@ -6,7 +6,7 @@ namespace Shience
 {
     public static class Shience
     {
-        private static IPublisher _publisher;
+        internal static IPublisher Publisher { get; set; }
 
         public static void SetPublisher([NotNull]IPublisher publisher)
         {
@@ -15,7 +15,7 @@ namespace Shience
                 throw new ArgumentNullException(nameof(publisher));
             }
 
-            _publisher = publisher;
+            Publisher = publisher;
         }
         
         public static Science<TResult> New<TResult>([NotNull]string name)
@@ -24,14 +24,13 @@ namespace Shience
             {
                 throw new ArgumentNullException(nameof(name));
             }
-
-            // TODO: test this 
-            if (_publisher == null)
+            
+            if (Publisher == null)
             {
                 throw new InvalidOperationException("Call Shience.SetPublisher([NotNull]IPublisher publisher) first.");
             }
 
-            return new Science<TResult>(name, _publisher);
+            return new Science<TResult>(name, Publisher.Publish);
         }
 
         public static Science<TResult> New<TResult>([NotNull]string name, [NotNull]IPublisher publisher)
@@ -46,7 +45,22 @@ namespace Shience
                 throw new ArgumentNullException(nameof(publisher));
             }
 
-            return new Science<TResult>(name, publisher);
+            return new Science<TResult>(name, publisher.Publish);
+        }
+
+        public static Science<TResult> New<TResult>([NotNull]string name, [NotNull]Action<ExperimentResult<TResult>> publish)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (publish == null)
+            {
+                throw new ArgumentNullException(nameof(publish));
+            }
+
+            return new Science<TResult>(name, publish);
         }
     }
 }

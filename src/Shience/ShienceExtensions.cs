@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Shience.Result;
 
 namespace Shience
 {
@@ -71,7 +70,7 @@ namespace Shience
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;
 
-            science.Publisher.Publish(experimentResult);
+            science.Publish(experimentResult);
 
             if (controlResult.Exception != null)
             {
@@ -111,7 +110,7 @@ namespace Shience
             experimentResult.ControlResult = await controlTask;
             experimentResult.CandidateResult = await candidateTask;
 
-            science.Publisher.Publish(experimentResult);
+            science.Publish(experimentResult);
 
             if (experimentResult.ControlResult.Exception != null)
             {

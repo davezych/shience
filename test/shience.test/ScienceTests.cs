@@ -66,8 +66,8 @@ namespace Shience.Test
             {
                 var science = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult");
 
-                var result = science.Test(control: () => true,
-                    candidate: () => true)
+                var result = science
+                    .Test(control: () => true, candidate: () => true)
                     .WithComparer((a, b) => a == b)
                     .Execute();
 
@@ -79,9 +79,10 @@ namespace Shience.Test
             {
                 var science = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult");
 
-                var result = science.Test(control: () => true,
-                    candidate: () => false,
-                    comparer: (a, b) => a == b).Execute();
+                var result = science
+                    .Test(control: () => true, candidate: () => false)
+                    .WithComparer((a, b) => a == b)
+                    .Execute();
 
                 Assert.Equal(false, PublishingResults.TestNamesWithResults["ComparerFuncReturnsCorrectFalseResult"]);
             }
@@ -121,7 +122,7 @@ namespace Shience.Test
 
                 var output = string.Empty;
 
-                var result = await science.TestAsync(
+                var result = await science.Test(
                     () =>
                     {
                         Thread.Sleep(1000);
@@ -133,7 +134,7 @@ namespace Shience.Test
                         Thread.Sleep(10);
                         output = "Candidate";
                         return true;
-                    }).Execute();
+                    }).ExecuteAsync();
 
                 Assert.Equal("Control", output);
             }
