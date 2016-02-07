@@ -7,20 +7,20 @@ Let's pretend you're changing the way you're handling permissions. Unit tests he
 ```csharp
 //Set a publisher
 Shience.SetPublisher(new FilePublisher(@"C:\file\path\to\results.txt"));
-    
+
 var science = Shience.New<bool>("widget-permissions");
-    
+
 var userCanRead = science.Test(
-    control: (() => return UserPermissions.CheckUser(currentUser); ), 
-    candidate: (() => return User.Can(currentUser, Permission.Read); )
-);
+        control: () => UserPermissions.CheckUser(currentUser), 
+        candidate: () => User.Can(currentUser, Permission.Read)
+    .Execute();
 
 if(userCanRead)
 {
     //do things!
 }
 ```
-                             
+
 Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will also compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
 
 ##Context
@@ -28,12 +28,12 @@ Test results sometimes aren't useful without context. You can add objects that y
 
 ```csharp
 var userCanRead = science.Test(
-    control: (() => return UserPermissions.CheckUser(currentUser); ), 
-    candidate: (() => return User.Can(currentUser, Permission.Read); ),
-    contexts: new[] {currentUser, "Within DisplayWidget method", DateTime.UtcNow }
-);
+        control: () => UserPermissions.CheckUser(currentUser), 
+        candidate: () => User.Can(currentUser, Permission.Read))
+    .WithContext(new[] { currentUser, "Within DisplayWidget method", DateTime.UtcNow })
+    .Execute();
 ```
-                                
+
 ##Comparing
 Objects can be hard to compare. You can specify how to compare them in 2 ways.
 
@@ -41,7 +41,7 @@ Objects can be hard to compare. You can specify how to compare them in 2 ways.
 Shience, by default, compares results using `.Equals`. You can override `Equals` and `GetHashCode` on your object and compare that way.
 
 ```csharp
-private class TestHelper
+private sealed class TestHelper
 {
     public int Number { get; set; }
 
@@ -53,12 +53,7 @@ private class TestHelper
             return false;
         }
 
-        if (otherTestHelper.Number == this.Number)
-        {
-            return true;
-        }
-
-        return false;
+        return otherTestHelper.Number == this.Number;
     }
 
     public override int GetHashCode()
@@ -72,20 +67,20 @@ then
 
 ```csharp
 var result = science.Test(
-                        control: (() => { return new TestHelper {Number = 1}; }),
-                        candidate: (() => { return new TestHelper {Number = 2}; })
-                    );
+                        control: () => new TestHelper(1),
+                        candidate: () => new TestHelper(2))
+                    .Execute();
 ```
 
 ###Pass in a custom `Func<>`
-You can also pass in a comparing `Func<>` to the `Test` method.
+You can also pass in a comparing `Func<>` to the `WithComparer` method.
 
 ```csharp
 var userCanRead = science.Test(
-                              control: (() => return UserPermissions.CheckUser(currentUser); ), 
-                              candidate: (() => return User.Can(currentUser, Permission.Read); ),
-                              comparer: (controlResult, candidateResult) => { return controlResult == candidateResult; }
-                         );
+                              control: () => UserPermissions.CheckUser(currentUser), 
+                              candidate: () => User.Can(currentUser, Permission.Read))
+                         .WithComparer((controlResult, candidateResult) => controlResult == candidateResult)
+                         .Execute();
 ```
 
 ##Writing your own Publisher
@@ -112,10 +107,10 @@ Shience.Shience.SetPublisher(new MyPublisher());
 Tests can be run in parallel using the `TestAsync` method. When run in parallel the order in which they start is no longer randomized. To run tests in parallel, `await` the `TestAsync` method:
 
 ```csharp
-var result = await science.TestAsync(
-                                  control: (() => { Thread.Sleep(5000); return true; }),
-                                  candidate: (() => { Thread.Sleep(5000); return true; }),
-                              );
+var result = await science.Test(
+                              control: () => { Thread.Sleep(5000); return true; },
+                              candidate: () => { Thread.Sleep(5000); return true; })
+                          .ExecuteAsync();
 ```
 
 ##Designing an experiment
