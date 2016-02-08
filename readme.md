@@ -34,6 +34,17 @@ var userCanRead = science.Test(
     .Execute();
 ```
 
+##Conditional runs
+Sometimes you don't want to science. If that's the case, you can specify a predicate indicating whether or not to skip the test using the `Where` method. A value of `true` indicates the test will run, a value of `false` indicates the test should be *skipped*.
+
+```csharp
+var userCanRead = science.Test(
+        control: () => return UserPermissions.CheckUser(currentUser),
+        candidate: () => return User.Can(currentUser, Permission.Read))
+    .Where(() => !user.IsAdmin) //Only run if user is not an admin
+    .Execute();
+```
+
 ##Comparing
 Objects can be hard to compare. You can specify how to compare them in 2 ways.
 
