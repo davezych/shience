@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Shience.Result
+namespace Shience
 {
     public class ExperimentResult<TResult>
     {
@@ -17,17 +17,7 @@ namespace Shience.Result
             Contexts = new List<object>();
         }
 
-        public bool Matched
-        {
-            get
-            {
-                if (ComparerFunc != null)
-                {
-                    return ComparerFunc(ControlResult.Result, CandidateResult.Result);
-                }
-
-                return ControlResult.Result.Equals(CandidateResult.Result);
-            }
-        }
+        public bool Matched => ComparerFunc?.Invoke(ControlResult.Result, CandidateResult.Result) 
+            ?? ControlResult.Result.Equals(CandidateResult.Result);
     }
 }

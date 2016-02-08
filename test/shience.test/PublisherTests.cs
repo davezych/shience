@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Shience.Test
 {
-    public class PublisherTests
+    public sealed class PublisherTests
     {
         [Fact]
         public void ShienceCanInstantiateWithPublisher()

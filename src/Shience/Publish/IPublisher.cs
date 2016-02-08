@@ -1,6 +1,4 @@
-﻿using Shience.Result;
-
-namespace Shience.Publish
+﻿namespace Shience.Publish
 {
     public interface IPublisher
     {
