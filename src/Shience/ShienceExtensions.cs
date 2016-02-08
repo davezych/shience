@@ -31,7 +31,7 @@ namespace Shience
 
         public static Science<TResult> RunWhen<TResult>(this Science<TResult> science, Func<bool> predicate)
         {
-            science.Skip = predicate();
+            science.Skip = !predicate(); //Negate value, if True test should run
 
             return science;
         }
@@ -44,7 +44,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null || !science.Skip)
+            if (science.Candidate == null || science.Skip)
             {
                 return RunAsync(science.Control).Result;
             }
@@ -95,7 +95,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null || !science.Skip)
+            if (science.Candidate == null || science.Skip)
             {
                 return RunAsync(science.Control).Result;
             }
