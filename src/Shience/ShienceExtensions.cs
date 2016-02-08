@@ -29,7 +29,7 @@ namespace Shience
             return science;
         }
 
-        public static Science<TResult> RunWhen<TResult>(this Science<TResult> science, Func<bool> predicate)
+        public static Science<TResult> Where<TResult>(this Science<TResult> science, Func<bool> predicate)
         {
             science.Skip = !predicate(); //Negate value, if True test should run
 

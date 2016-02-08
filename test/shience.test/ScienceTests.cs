@@ -132,16 +132,16 @@ namespace Shience.Test
             }
 
             [Fact]
-            public void TestIsSkippedWhenRunWhenIsFalse()
+            public void TestIsSkippedWhenWhereIsFalse()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsSkippedWhenRunWhenIsFalse", (e) =>
+                var science = Shience.New<bool>("TestIsSkippedWhenWhereIsFalse", (e) =>
                 {
                     ran = true;
                 });
                 var result = science
                     .Test(() => true, () => true)
-                    .RunWhen(() => false)
+                    .Where(() => false)
                     .Execute();
 
                 Assert.True(result);
@@ -149,16 +149,16 @@ namespace Shience.Test
             }
 
             [Fact]
-            public void TestIsNotSkippedWhenRunWhenIsTrue()
+            public void TestIsNotSkippedWhenWhereIsTrue()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsNotSkippedWhenRunWhenIsTrue", (e) =>
+                var science = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrue", (e) =>
                 {
                     ran = true;
                 });
                 var result = science
                     .Test(() => true, () => true)
-                    .RunWhen(() => true)
+                    .Where(() => true)
                     .Execute();
 
                 Assert.True(result);
