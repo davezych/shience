@@ -29,6 +29,13 @@ namespace Shience
             return science;
         }
 
+        public static Science<TResult> RunWhen<TResult>(this Science<TResult> science, Func<bool> predicate)
+        {
+            science.ShouldRun = predicate();
+
+            return science;
+        }
+
         public static TResult Execute<TResult>(this Science<TResult> science)
         {
             if (science.Control == null)
@@ -37,7 +44,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null)
+            if (science.Candidate == null || !science.ShouldRun)
             {
                 return RunAsync(science.Control).Result;
             }
@@ -88,7 +95,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null)
+            if (science.Candidate == null || !science.ShouldRun)
             {
                 return RunAsync(science.Control).Result;
             }
