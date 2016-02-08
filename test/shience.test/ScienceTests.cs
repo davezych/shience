@@ -105,6 +105,31 @@ namespace Shience.Test
                 Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true).Execute());
             }
 
+            [Fact]
+            public void TestIsSkippedWhenRunWhenIsFalse()
+            {
+                var science = Shience.New<bool>("TestIsSkippedWhenRunWhenIsFalse");
+                var result = science
+                    .Test(() => true, () => true)
+                    .RunWhen(() => false)
+                    .Execute();
+
+                Assert.True(result);
+                Assert.False(PublishingResults.TestNamesWithResults.ContainsKey("TestIsSkippedWhenRunWhenIsFalse"));
+            }
+
+            [Fact]
+            public void TestIsNotSkippedWhenRunWhenIsTrue()
+            {
+                var science = Shience.New<bool>("TestIsNotSkippedWhenRunWhenIsTrue");
+                var result = science
+                    .Test(() => true, () => true)
+                    .RunWhen(() => true)
+                    .Execute();
+
+                Assert.True(result);
+                Assert.True(PublishingResults.TestNamesWithResults.ContainsKey("TestIsNotSkippedWhenRunWhenIsTrue"));
+            }
         }
         
         public sealed class TestAsync
