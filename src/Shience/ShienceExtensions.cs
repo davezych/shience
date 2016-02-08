@@ -31,7 +31,7 @@ namespace Shience
 
         public static Science<TResult> Where<TResult>(this Science<TResult> science, Func<bool> predicate)
         {
-            science.Skip = !predicate(); //Negate value, if True test should run
+            science.Skip = !predicate(); //Negate value, if True don't skip
 
             return science;
         }
