@@ -12,6 +12,7 @@ namespace Shience
         internal Func<TResult> Candidate { get; set; }
         internal Func<TResult, TResult, bool> Comparer { get; set; }
         internal IList<object> Contexts { get; } = new List<object>();
+        internal bool Skip { get; set; }
 
         internal Science([NotNull]string testName, [NotNull]Action<ExperimentResult<TResult>> publish)
         {

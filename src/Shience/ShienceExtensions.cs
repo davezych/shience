@@ -29,6 +29,13 @@ namespace Shience
             return science;
         }
 
+        public static Science<TResult> Where<TResult>(this Science<TResult> science, Func<bool> predicate)
+        {
+            science.Skip = !predicate(); //Negate value, if True don't skip
+
+            return science;
+        }
+
         public static TResult Execute<TResult>(this Science<TResult> science)
         {
             if (science.Control == null)
@@ -37,7 +44,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null)
+            if (science.Candidate == null || science.Skip)
             {
                 return RunAsync(science.Control).Result;
             }
@@ -88,7 +95,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null)
+            if (science.Candidate == null || science.Skip)
             {
                 return RunAsync(science.Control).Result;
             }
