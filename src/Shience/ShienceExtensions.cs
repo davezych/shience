@@ -47,6 +47,13 @@ namespace Shience
             return science;
         }
 
+        public static Science<TResult> RaiseOnMismatch<TResult>(this Science<TResult> science)
+        {
+            science.RaiseOnMismatch = true;
+
+            return science;
+        }
+
         public static TResult Execute<TResult>(this Science<TResult> science)
         {
             if (science.Control == null)
