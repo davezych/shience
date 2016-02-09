@@ -56,7 +56,7 @@ var userCanRead = science.Test(
     .Execute();
 ```
 
-This allows you to start small, ensure performance is okay and fix any immediate mismatches and ramp up when you're ready to science all the things.
+This allows you to start small, ensure performance is okay and fix any immediate mismatches and then ramp up when you're ready to science all the things.
 
 ##Comparing
 Objects can be hard to compare. You can specify how to compare them in 2 ways.
