@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Shience
@@ -11,7 +10,7 @@ namespace Shience
         internal Func<TResult> Control { get; set; }
         internal Func<TResult> Candidate { get; set; }
         internal Func<TResult, TResult, bool> Comparer { get; set; }
-        internal IList<object> Contexts { get; } = new List<object>();
+        internal dynamic Contexts { get; set; }
         internal bool Skip { get; set; }
 
         internal Science([NotNull]string testName, [NotNull]Action<ExperimentResult<TResult>> publish)

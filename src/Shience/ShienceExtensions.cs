@@ -21,10 +21,9 @@ namespace Shience
             return science;
         }
 
-        public static Science<TResult> WithContext<TResult>(this Science<TResult> science, params object[] contexts)
+        public static Science<TResult> WithContext<TResult>(this Science<TResult> science, dynamic contexts)
         {
-            science.Contexts.Clear();
-            science.Contexts.Add(contexts);
+            science.Contexts = contexts;
 
             return science;
         }
