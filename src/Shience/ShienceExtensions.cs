@@ -9,6 +9,16 @@ namespace Shience
     {
         public static Science<TResult> Test<TResult>(this Science<TResult> science, Func<TResult> control, Func<TResult> candidate)
         {
+            if (control == null)
+            {
+                throw new ArgumentNullException(nameof(control));
+            }
+
+            if (science.Control != null || science.Candidate != null)
+            {
+                throw new InvalidOperationException("Test may not be called multiple times");
+            }
+
             science.Control = control;
             science.Candidate = candidate;
 

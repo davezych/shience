@@ -221,6 +221,14 @@ namespace Shience.Test
                 Assert.True(result);
                 Assert.False(ran);
             }
+
+            [Fact]
+            public void TestThrowsIfCalledMultipleTimes()
+            {
+                var science = Shience.New<bool>("TestThrowsIfCalledMultipleTimes");
+
+                Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true).Test(() => true, () => true).Execute());
+            }
         }
         
         public sealed class TestAsync
