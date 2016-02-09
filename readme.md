@@ -58,6 +58,19 @@ var userCanRead = science.Test(
 
 This allows you to start small, ensure performance is okay and fix any immediate mismatches and then ramp up when you're ready to science all the things.
 
+###Chaining
+You can also chain `Where` calls if you have multiple conditions:
+
+```csharp
+var userCanRead = science.Test(
+        control: () => return UserPermissions.CheckUser(currentUser),
+        candidate: () => return User.Can(currentUser, Permission.Read))
+    .Where(() => new Random().Next() % 2 == 0)
+    .Where(() => !currentUser.IsAdmin)
+    .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 4) //Don't run at peak hours
+    .Execute();
+```
+
 ##Comparing
 Objects can be hard to compare. You can specify how to compare them in 2 ways.
 
