@@ -164,6 +164,23 @@ namespace Shience.Test
                 Assert.True(result);
                 Assert.True(ran);
             }
+
+            [Fact]
+            public void ContextsArePassedToPublisher()
+            {
+                var hasContext = false;
+                var science = Shience.New<bool>("ContextsArePassedToPublisher",
+                (e) =>
+                {
+                    hasContext = e.Contexts != null;
+                });
+
+                var result = science.Test(() => true, () => true)
+                    .WithContext(new {test = "test"})
+                    .Execute();
+
+                Assert.True(hasContext);
+            }
         }
         
         public sealed class TestAsync

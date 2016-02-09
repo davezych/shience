@@ -56,7 +56,7 @@ namespace Shience
 
             if (science.Contexts != null)
             {
-                experimentResult.Contexts.AddRange(science.Contexts);
+                experimentResult.Contexts = science.Contexts;
             }
 
             TestResult<TResult> controlResult, candidateResult;
@@ -107,7 +107,7 @@ namespace Shience
 
             if (science.Contexts != null)
             {
-                experimentResult.Contexts.AddRange(science.Contexts);
+                experimentResult.Contexts = science.Contexts;
             }
 
             var controlTask = InternalTestAsync(science.Control);
