@@ -164,6 +164,63 @@ namespace Shience.Test
                 Assert.True(result);
                 Assert.True(ran);
             }
+
+            [Fact]
+            public void TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres()
+            {
+                var ran = false;
+                var science = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres", (e) =>
+                {
+                    ran = true;
+                });
+                var result = science
+                    .Test(() => true, () => true)
+                    .Where(() => true)
+                    .Where(() => true)
+                    .Where(() => true)
+                    .Execute();
+
+                Assert.True(result);
+                Assert.True(ran);
+            }
+
+            [Fact]
+            public void TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres()
+            {
+                var ran = false;
+                var science = Shience.New<bool>("TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres", (e) =>
+                {
+                    ran = true;
+                });
+                var result = science
+                    .Test(() => true, () => true)
+                    .Where(() => false)
+                    .Where(() => false)
+                    .Where(() => false)
+                    .Execute();
+
+                Assert.True(result);
+                Assert.False(ran);
+            }
+
+            [Fact]
+            public void TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse()
+            {
+                var ran = false;
+                var science = Shience.New<bool>("TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse", (e) =>
+                {
+                    ran = true;
+                });
+                var result = science
+                    .Test(() => true, () => true)
+                    .Where(() => false)
+                    .Where(() => true)
+                    .Where(() => false)
+                    .Execute();
+
+                Assert.True(result);
+                Assert.False(ran);
+            }
         }
         
         public sealed class TestAsync
@@ -184,7 +241,7 @@ namespace Shience.Test
                 var result = await science.Test(
                     () =>
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(100);
                         output = "Control";
                         return true;
                     },
