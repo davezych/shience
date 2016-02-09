@@ -67,7 +67,7 @@ var userCanRead = science.Test(
         candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 2 == 0)
     .Where(() => !currentUser.IsAdmin)
-    .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 4) //Don't run at peak hours
+    .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 16) //Don't run at peak hours
     .Execute();
 ```
 
