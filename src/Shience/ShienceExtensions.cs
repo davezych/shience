@@ -45,7 +45,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null || !science.Predicates.All(p => p()))
+            if (science.Candidate == null || science.Predicates.Any(p => !p()))
             {
                 return RunAsync(science.Control).Result;
             }
@@ -96,7 +96,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null || !science.Predicates.All(p => p()))
+            if (science.Candidate == null || science.Predicates.Any(p => !p()))
             {
                 return RunAsync(science.Control).Result;
             }
