@@ -46,7 +46,7 @@ var userCanRead = science.Test(
 ```
 
 ###Ramping up experiments
-The `Where` method also lets you specify a percentage of time an experiment should run:
+The `Where` method can be used to specify a percentage of time an experiment should run:
 
 ```csharp
 var userCanRead = science.Test(
