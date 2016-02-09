@@ -96,10 +96,15 @@ namespace Shience
             experimentResult.CandidateResult = candidateResult;
 
             science.Publish(experimentResult);
-
+            
             if (controlResult.Exception != null)
             {
                 throw controlResult.Exception;
+            }
+
+            if (science.RaiseOnMismatch)
+            {
+                throw new MismatchException($"Control: {controlResult.Result}, Candidate: {candidateResult.Result}");
             }
 
             return controlResult.Result;
@@ -140,6 +145,11 @@ namespace Shience
             if (experimentResult.ControlResult.Exception != null)
             {
                 throw experimentResult.ControlResult.Exception;
+            }
+
+            if (science.RaiseOnMismatch)
+            {
+                throw new MismatchException($"Control: {experimentResult.ControlResult.Result}, Candidate: {experimentResult.CandidateResult.Result}");
             }
 
             return experimentResult.ControlResult.Result;
