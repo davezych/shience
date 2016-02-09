@@ -223,9 +223,9 @@ namespace Shience.Test
             }
 
             [Fact]
-            public void TestThrowsIfCalledMultipleTimes()
+            public void TestThrowsInvalidOperationExceptionIfCalledMultipleTimes()
             {
-                var science = Shience.New<bool>("TestThrowsIfCalledMultipleTimes");
+                var science = Shience.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes");
 
                 Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true).Test(() => true, () => true).Execute());
             }
