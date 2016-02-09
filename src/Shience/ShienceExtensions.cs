@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shience
@@ -31,7 +32,7 @@ namespace Shience
 
         public static Science<TResult> Where<TResult>(this Science<TResult> science, Func<bool> predicate)
         {
-            science.Skip = !predicate(); //Negate value, if True don't skip
+            science.Predicates.Add(predicate);
 
             return science;
         }
@@ -44,7 +45,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null || science.Skip)
+            if (science.Candidate == null || !science.Predicates.All(p => p()))
             {
                 return RunAsync(science.Control).Result;
             }
@@ -95,7 +96,7 @@ namespace Shience
             }
 
             //If candidate is null, don't do any science
-            if (science.Candidate == null || science.Skip)
+            if (science.Candidate == null || !science.Predicates.All(p => p()))
             {
                 return RunAsync(science.Control).Result;
             }
