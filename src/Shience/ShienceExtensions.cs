@@ -60,13 +60,13 @@ namespace Shience
 
         public static TResult Execute<TResult>(this Science<TResult> science)
         {
-            if (science.Control == null)
+            if (science.Control == null || science.Candidate == null)
             {
-                throw new ArgumentNullException(nameof(science.Control));
+                throw new InvalidOperationException(
+                    "Call Science.Test<TResult>(this Science<TResult> science, Func<TResult> control, Func<TResult> candidate) first.");
             }
 
-            //If candidate is null, don't do any science
-            if (science.Candidate == null || science.Predicates.Any(p => !p()))
+            if (science.Predicates.Any(p => !p()))
             {
                 return RunAsync(science.Control).Result;
             }
@@ -116,13 +116,13 @@ namespace Shience
 
         public static async Task<TResult> ExecuteAsync<TResult>(this Science<TResult> science)
         {
-            if (science.Control == null)
+            if (science.Control == null || science.Candidate == null)
             {
-                throw new ArgumentNullException(nameof(science.Control));
+                throw new InvalidOperationException(
+                    "Call Science.Test<TResult>(this Science<TResult> science, Func<TResult> control, Func<TResult> candidate) first.");
             }
 
-            //If candidate is null, don't do any science
-            if (science.Candidate == null || science.Predicates.Any(p => !p()))
+            if (science.Predicates.Any(p => !p()))
             {
                 return RunAsync(science.Control).Result;
             }

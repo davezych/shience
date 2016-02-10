@@ -233,6 +233,22 @@ namespace Shience.Test
 
                 Assert.Throws<MismatchException>(() => science.Test(() => true, () => false).RaiseOnMismatch().Execute());
             }
+
+            [Fact]
+            public void ExecuteThrowsIfTestNotCalledFirst()
+            {
+                var science = Shience.New<bool>("ExecuteThrowsIfTestNotCalledFirst", (e) => { });
+
+                Assert.Throws<InvalidOperationException>(() => science.Execute());
+            }
+
+            [Fact]
+            public async Task ExecuteAsyncThrowsIfTestNotCalledFirst()
+            {
+                var science = Shience.New<bool>("ExecuteAsyncThrowsIfTestNotCalledFirst", (e) => { });
+
+                await Assert.ThrowsAsync<InvalidOperationException>(() => science.ExecuteAsync());
+            }
         }
         
         public sealed class TestAsync
