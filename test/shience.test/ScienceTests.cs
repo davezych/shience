@@ -229,6 +229,14 @@ namespace Shience.Test
 
                 Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true).Test(() => true, () => true).Execute());
             }
+
+            [Fact]
+            public void ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled()
+            {
+                var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled");
+
+                Assert.Throws<MismatchException>(() => science.Test(() => true, () => false).RaiseOnMismatch().Execute());
+            }
         }
         
         public sealed class TestAsync
