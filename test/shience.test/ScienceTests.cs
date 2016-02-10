@@ -107,17 +107,13 @@ namespace Shience.Test
             }
 
             [Fact]
-            public void NoTestsAreRunIfCandidateIsNull()
+            public void TestThrowsIfCandidateIsNull()
             {
-                var ran = false;
                 var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull", (e) =>
                 {
-                    ran = true;
                 });
 
-                science.Test(() => true, null).Execute();
-
-                Assert.False(ran);
+                Assert.Throws<ArgumentNullException>(() => science.Test(() => true, null).Execute());
             }
 
             [Fact]
@@ -236,6 +232,22 @@ namespace Shience.Test
                 var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled");
 
                 Assert.Throws<MismatchException>(() => science.Test(() => true, () => false).RaiseOnMismatch().Execute());
+            }
+
+            [Fact]
+            public void ExecuteThrowsIfTestNotCalledFirst()
+            {
+                var science = Shience.New<bool>("ExecuteThrowsIfTestNotCalledFirst", (e) => { });
+
+                Assert.Throws<InvalidOperationException>(() => science.Execute());
+            }
+
+            [Fact]
+            public async Task ExecuteAsyncThrowsIfTestNotCalledFirst()
+            {
+                var science = Shience.New<bool>("ExecuteAsyncThrowsIfTestNotCalledFirst", (e) => { });
+
+                await Assert.ThrowsAsync<InvalidOperationException>(() => science.ExecuteAsync());
             }
         }
         
