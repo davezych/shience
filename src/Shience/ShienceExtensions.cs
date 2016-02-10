@@ -13,6 +13,10 @@ namespace Shience
             {
                 throw new ArgumentNullException(nameof(control));
             }
+            if (candidate == null)
+            {
+                throw new ArgumentNullException(nameof(candidate));
+            }
 
             if (science.Control != null || science.Candidate != null)
             {

@@ -107,17 +107,13 @@ namespace Shience.Test
             }
 
             [Fact]
-            public void NoTestsAreRunIfCandidateIsNull()
+            public void TestThrowsIfCandidateIsNull()
             {
-                var ran = false;
                 var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull", (e) =>
                 {
-                    ran = true;
                 });
 
-                science.Test(() => true, null).Execute();
-
-                Assert.False(ran);
+                Assert.Throws<ArgumentNullException>(() => science.Test(() => true, null).Execute());
             }
 
             [Fact]
