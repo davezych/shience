@@ -5,27 +5,18 @@ namespace Shience.Test
 {
     public sealed class ShienceTests
     {
-        public sealed class SetPublisher
-        {
-            [Fact]
-            public void InstantiatingScienceThrowsArgumentNullIfPublisherIsNull()
-            {
-                Assert.Throws<ArgumentNullException>(() => Shience.SetPublisher(null));
-            }
-        }
-
         public sealed class New
         {
             [Fact]
             public void InstantiatingScienceThrowsArgumentNullIfTestNameIsNull()
             {
-                Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(null));
+                Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(null, (e) => { }));
             }
 
             [Fact]
             public void InstantiatingScienceThrowsArgumentNullIfTestNameIsEmptyString()
             {
-                Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(string.Empty));
+                Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(string.Empty, (e) => { }));
             }
         }
     }

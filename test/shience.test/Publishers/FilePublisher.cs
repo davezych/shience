@@ -2,21 +2,20 @@
 using System.IO;
 using System.Text;
 
-namespace Shience.Publish
+namespace Shience.Test.Publishers
 {
-    public sealed class FilePublisher : IPublisher
+    public class FilePublisher
     {
-        private readonly string _filePath;
+        private readonly string _path;
 
         public FilePublisher(string path)
         {
-            _filePath = path;
-        } 
+            _path = path;
+        }
 
         public void Publish<TResult>(ExperimentResult<TResult> result)
         {
             var sb = new StringBuilder();
-
             sb.Append(DateTime.UtcNow);
             sb.Append("|");
             sb.Append(result.TestName);
@@ -38,11 +37,11 @@ namespace Shience.Publish
             sb.Append(result.CandidateResult.Exception);
             sb.Append("|");
             sb.Append(string.Join(";", result.Contexts));
-            
-            using (var fs = new FileStream(_filePath, FileMode.Append))
+
+            using (var fs = new FileStream(_path, FileMode.Append))
             using (var sw = new StreamWriter(fs))
             {
-                sw.WriteLine(sb.ToString());
+                sw.WriteLine(sb);
             }
         }
     }

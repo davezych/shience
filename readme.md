@@ -5,10 +5,7 @@ A C# library for carefully refactoring critical paths. It's a .NET port(ish) of 
 Let's pretend you're changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
 ```csharp
-//Set a publisher
-Shience.SetPublisher(new FilePublisher(@"C:\file\path\to\results.txt"));
-
-var science = Shience.New<bool>("widget-permissions");
+var science = Shience.New<bool>("widget-permissions", (e) => { /*Publish results*/ });
 
 var userCanRead = science.Test(
         control: () => return UserPermissions.CheckUser(currentUser), 
@@ -22,6 +19,46 @@ if(userCanRead)
 ```
 
 Shience will run the control (the old way) and the candidate (the new way) in random order. It will return the control result to you for use, but will also compare the control result with the candidate result to determine whether the behaviors are the same. It will publish the comparison result using the publisher specified.
+
+##Publishing
+When instantiating a new experiment you need to provide a publisher so you have a way to record the results. The simplist way is to provide a lambda:
+
+```csharp
+Shience.New<bool>("widget-permissions", (experimentResults) => {
+    using(var sw = new StreamWriter(@"/my/file/path/results.txt"))
+    {
+        sw.Write(experimentResults.TestName);
+        sw.Write(experimentResults.Matched);
+        //etc
+    }
+});
+```
+
+For more complex publishing, it's best to create a class with a `void<TResult>(ExperimentResult<TResult>)` method. For instance, if you're using Entity Framework and want to publish to your database:
+
+```csharp
+public class DatabasePublisher
+{
+    MyEfContext _context;
+    public DatabasePublisher(MyEfContext context)
+    {
+        _context = context;
+    }
+
+    public void Publish<TResult>(ExperimentResult<TResult> e)
+    {
+        _context.PublishingResults.Add(new PublishingResult {
+            TestName = e.TestName,
+            Matched = e.Matched,
+            //etc
+        });
+
+        _context.SaveChanges();
+    }
+}
+
+var science = Shience.New<bool>("widget-permissions", new DatabasePublisher(myEfContext).Publish);
+```
 
 ##Context
 Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published with the rest of the data.
@@ -124,25 +161,6 @@ var userCanRead = science.Test(
                          .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
 ```
 
-##Writing your own Publisher
-To write your own custom publisher (to write to a database, or send to a service or whatever) implement `IPublisher`:
-
-```csharp
-public class MyPublisher : IPublisher
-{
-    public void Publish<TResult>(ExperimentResult<TResult> result)
-    {
-        //Write results somewhere
-    }
-}
-```
-
-And once written, set the publisher in Shience setup:
-
-```csharp
-Shience.Shience.SetPublisher(new MyPublisher());
-```
-
 ##Async
 
 Tests can be run in parallel using the `ExecuteAsync` method. When run in parallel the order in which they start is no longer randomized. To run tests in parallel, `await` the `ExecuteAsync` method:
@@ -159,3 +177,4 @@ var result = await science.Test(
 Due to the fact that both the control *and* candidate have the possibility of running, Shience **should not** be used to test **write** operations. If Shience is set up to run a write operation, it's entirely possible that the write could happen twice (which is probably not wanted). 
 
 It's best to only do science on read operations. 
+
