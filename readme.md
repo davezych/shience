@@ -57,7 +57,7 @@ public class DatabasePublisher
     }
 }
 
-Shience.New<bool>("widget-permissions", new DatabasePublisher(myEfContext).Publish);
+var science = Shience.New<bool>("widget-permissions", new DatabasePublisher(myEfContext).Publish);
 ```
 
 ##Context
