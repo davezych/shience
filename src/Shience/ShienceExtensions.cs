@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -7,20 +8,27 @@ namespace Shience
 {
     public static class ShienceExtensions
     {
-        public static Science<TResult> Test<TResult>(this Science<TResult> science, Func<TResult> control, Func<TResult> candidate)
+        public static Science<TResult> PublishTo<TResult>(
+            [NotNull]this Science<TResult> science, [NotNull]Action<ExperimentResult<TResult>> publish)
         {
-            if (control == null)
-            {
-                throw new ArgumentNullException(nameof(control));
-            }
-            if (candidate == null)
-            {
-                throw new ArgumentNullException(nameof(candidate));
-            }
+            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (publish == null) throw new ArgumentNullException(nameof(publish));
+
+            science.Publish.Add(publish);
+            return science;
+        }
+
+        public static Science<TResult> Test<TResult>(
+            [NotNull]this Science<TResult> science, [NotNull]Func<TResult> control, [NotNull]Func<TResult> candidate)
+        {
+            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (control == null) throw new ArgumentNullException(nameof(control));
+            if (candidate == null) throw new ArgumentNullException(nameof(candidate));
 
             if (science.Control != null || science.Candidate != null)
             {
-                throw new InvalidOperationException("Test may not be called multiple times");
+                var message = $"{nameof(Test)} may not be called multiple times.";
+                throw new InvalidOperationException(message);
             }
 
             science.Control = control;
@@ -29,37 +37,56 @@ namespace Shience
             return science;
         }
 
-        public static Science<TResult> WithComparer<TResult>(this Science<TResult> science, Func<TResult, TResult, bool> comparer)
+        public static Science<TResult> WithComparer<TResult>(
+            [NotNull]this Science<TResult> science, [NotNull]Func<TResult, TResult, bool> comparer)
         {
+            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+
+            if (science.Comparer != null)
+            {
+                var message = $"{nameof(WithComparer)} may not be called multiple times.";
+                throw new InvalidOperationException(message);
+            }
+
             science.Comparer = comparer;
 
             return science;
         }
 
-        public static Science<TResult> WithContext<TResult>(this Science<TResult> science, params object[] contexts)
+        public static Science<TResult> WithContext<TResult>(
+            [NotNull]this Science<TResult> science, dynamic context)
         {
-            science.Contexts.Clear();
-            science.Contexts.Add(contexts);
-
+            if (science == null) throw new ArgumentNullException(nameof(science));
+            
+            science.Context = context; // may be null
             return science;
         }
 
-        public static Science<TResult> Where<TResult>(this Science<TResult> science, Func<bool> predicate)
+        public static Science<TResult> Where<TResult>(
+            [NotNull]this Science<TResult> science, [NotNull]Func<bool> predicate)
         {
+            if(science == null) throw new ArgumentNullException(nameof(science));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
             science.Predicates.Add(predicate);
 
             return science;
         }
 
-        public static Science<TResult> RaiseOnMismatch<TResult>(this Science<TResult> science)
+        public static Science<TResult> RaiseOnMismatch<TResult>([NotNull]this Science<TResult> science)
         {
+            if (science == null) throw new ArgumentNullException(nameof(science));
+
             science.RaiseOnMismatch = true;
 
             return science;
         }
 
-        public static TResult Execute<TResult>(this Science<TResult> science)
+        public static TResult Execute<TResult>([NotNull]this Science<TResult> science)
         {
+            if (science == null) throw new ArgumentNullException(nameof(science));
+
             if (science.Control == null || science.Candidate == null)
             {
                 throw new InvalidOperationException(
@@ -77,11 +104,8 @@ namespace Shience
                 ComparerFunc = science.Comparer,
             };
 
-            if (science.Contexts != null)
-            {
-                experimentResult.Contexts.AddRange(science.Contexts);
-            }
-
+            experimentResult.Context = science.Context;
+            
             TestResult<TResult> controlResult, candidateResult;
 
             if (new Random().Next() % 2 == 0)
@@ -99,7 +123,7 @@ namespace Shience
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;
 
-            science.Publish(experimentResult);
+            science.Publish.ForEach(p => p(experimentResult));
             
             if (controlResult.Exception != null)
             {
@@ -114,8 +138,10 @@ namespace Shience
             return controlResult.Result;
         }
 
-        public static async Task<TResult> ExecuteAsync<TResult>(this Science<TResult> science)
+        public static async Task<TResult> ExecuteAsync<TResult>([NotNull]this Science<TResult> science)
         {
+            if (science == null) throw new ArgumentNullException(nameof(science));
+
             if (science.Control == null || science.Candidate == null)
             {
                 throw new InvalidOperationException(
@@ -133,18 +159,15 @@ namespace Shience
                 ComparerFunc = science.Comparer,
             };
 
-            if (science.Contexts != null)
-            {
-                experimentResult.Contexts.AddRange(science.Contexts);
-            }
-
+            experimentResult.Context = science.Context;
+            
             var controlTask = InternalTestAsync(science.Control);
             var candidateTask = InternalTestAsync(science.Candidate);
 
             experimentResult.ControlResult = await controlTask;
             experimentResult.CandidateResult = await candidateTask;
 
-            science.Publish(experimentResult);
+            science.Publish.ForEach(p => p(experimentResult));
 
             if (experimentResult.ControlResult.Exception != null)
             {
@@ -159,31 +182,36 @@ namespace Shience
             return experimentResult.ControlResult.Result;
         }
 
-        private static async Task<TestResult<TResult>> InternalTestAsync<TResult>(Func<TResult> action)
+        private static async Task<TestResult<TResult>> InternalTestAsync<TResult>([NotNull]Func<TResult> action)
         {
-            var tr = new TestResult<TResult>();
-            var sw = new Stopwatch();
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
-            sw.Start();
+            var testResult = new TestResult<TResult>();
+            var timer = new Stopwatch();
 
+            timer.Start();
             try
             {
                 var result = RunAsync(action);
-                tr.Result = await result;
+                testResult.Result = await result;
             }
             catch (Exception e)
             {
-                tr.Exception = e;
+                testResult.Exception = e;
             }
-
-            sw.Stop();
-
-            tr.RunTime = sw.ElapsedMilliseconds;
-            return tr;
+            finally
+            {
+                timer.Stop();
+            }
+            
+            testResult.RunTime = timer.ElapsedMilliseconds;
+            return testResult;
         }
 
-        private static async Task<TResult> RunAsync<TResult>(Func<TResult> action)
+        private static async Task<TResult> RunAsync<TResult>([NotNull]Func<TResult> action)
         {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
             var result = await Task.Run(action);
             return result;
         }

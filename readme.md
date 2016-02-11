@@ -1,18 +1,17 @@
 ﻿#Shience
-A C# library for carefully refactoring critical paths. It's a .NET port(ish) of Github's Scientist library. (https://github.com/github/scientist)
+A C# library for carefully refactoring critical paths. It's a .NET(ish) port of [Github's Scientist library](https://github.com/github/scientist).
 
 ##How do I do science?
 Let's pretend you're changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
 ```csharp
-//Set a publisher
-Shience.SetPublisher(new FilePublisher(@"C:\file\path\to\results.txt"));
+var publisher = new FilePublisher(@"C:\file\path\to\results.log");
 
-var science = Shience.New<bool>("widget-permissions");
-
-var userCanRead = science.Test(
-        control: () => return UserPermissions.CheckUser(currentUser), 
-        candidate: () => return User.Can(currentUser, Permission.Read))
+// create a science object
+var userCanRead = Shience.New<bool>("widget-permissions")
+    .Test(control: () => UserPermissions.CheckUser(currentUser), 
+          candidate: () => User.Can(currentUser, Permission.Read))
+    .PublishTo(publisher.Publish)
     .Execute();
 
 if(userCanRead)
@@ -27,10 +26,16 @@ Shience will run the control (the old way) and the candidate (the new way) in ra
 Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published with the rest of the data.
 
 ```csharp
-var userCanRead = science.Test(
-        control: () => return UserPermissions.CheckUser(currentUser), 
-        candidate: () => return User.Can(currentUser, Permission.Read))
-    .WithContext(contexts: new[] {currentUser, "Within DisplayWidget method", DateTime.UtcNow })
+var userCanRead = Shience.New<bool>("context")
+    .Test(control: () => return UserPermissions.CheckUser(currentUser), 
+          candidate: () => return User.Can(currentUser, Permission.Read))
+    .WithContext(new { 
+        Class = nameof(MyClass),
+        Method = nameof(MyMethod),
+        User = currentUser,  
+        Timestamp = DateTime.UtcNow 
+    })
+    .PublishTo(result => DoSomething(result.Context))
     .Execute();
 ```
 
@@ -38,9 +43,9 @@ var userCanRead = science.Test(
 Sometimes you don't want to science. If that's the case, you can specify a predicate indicating whether or not to skip the test using the `Where` method. A value of `true` indicates the test will run, a value of `false` indicates the test should be *skipped*.
 
 ```csharp
-var userCanRead = science.Test(
-        control: () => return UserPermissions.CheckUser(currentUser),
-        candidate: () => return User.Can(currentUser, Permission.Read))
+var userCanRead = Shience.New<bool>("conditional")
+    .Test(control: () => return UserPermissions.CheckUser(currentUser),
+          candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => !user.IsAdmin) //Only run if user is not an admin
     .Execute();
 ```
@@ -49,9 +54,9 @@ var userCanRead = science.Test(
 The `Where` method can be used to specify a percentage of time an experiment should run:
 
 ```csharp
-var userCanRead = science.Test(
-        control: () => return UserPermissions.CheckUser(currentUser),
-        candidate: () => return User.Can(currentUser, Permission.Read))
+var userCanRead = Shience.New<bool>("conditional")
+    .Test(control: () => return UserPermissions.CheckUser(currentUser),
+          candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 10 == 0) //Run 10% of all requests
     .Execute();
 ```
@@ -62,9 +67,9 @@ This allows you to start small, ensure performance is okay and fix any immediate
 You can also chain `Where` calls if you have multiple conditions:
 
 ```csharp
-var userCanRead = science.Test(
-        control: () => return UserPermissions.CheckUser(currentUser),
-        candidate: () => return User.Can(currentUser, Permission.Read))
+var userCanRead = Shience.New<bool>("conditional")
+    .Test(control: () => return UserPermissions.CheckUser(currentUser),
+          candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 2 == 0)
     .Where(() => !currentUser.IsAdmin)
     .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 16) //Don't run at peak hours
@@ -108,26 +113,31 @@ private class TestHelper
 then
 
 ```csharp
-var result = science.Test(
-                        control: () => new TestHelper(1),
-                        candidate: () => TestHelper(2))
-                    .Execute();
+var result = Shience.New<bool>("compare")
+    .Test(control: () => new TestHelper(1),
+          candidate: () => TestHelper(2))
+    .Execute();
 ```
 
 ###Pass in a custom `Func<>`
 You can also pass in a comparing `Func<>` to the `WithComparer` method.
 
 ```csharp
-var userCanRead = science.Test(
-                              control: () => return UserPermissions.CheckUser(currentUser), 
-                              candidate: () => return User.Can(currentUser, Permission.Read))
-                         .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
+var userCanRead = Shience.New<bool>("compare")
+    .Test(control: () => return UserPermissions.CheckUser(currentUser), 
+          candidate: () => return User.Can(currentUser, Permission.Read))
+    .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
 ```
 
 ##Writing your own Publisher
-To write your own custom publisher (to write to a database, or send to a service or whatever) implement `IPublisher`:
+To write your own custom publisher (to write to a log, database, send to a service, or whatever):
 
 ```csharp
+public IPublisher
+{
+    void Publish<TResult>(ExperimentResult<TResult> result);
+}
+
 public class MyPublisher : IPublisher
 {
     public void Publish<TResult>(ExperimentResult<TResult> result)
@@ -137,10 +147,26 @@ public class MyPublisher : IPublisher
 }
 ```
 
-And once written, set the publisher in Shience setup:
+Use dependency injection to inject the publisher: 
 
 ```csharp
-Shience.Shience.SetPublisher(new MyPublisher());
+public class MyTestProxy
+{
+    private IPublisher Publisher { get; }
+
+    public(IPublisher publisher)
+    {
+        Publisher = publisher;
+    }
+
+    // ...
+}
+```
+
+And once written, set the publisher:
+
+```csharp
+science.PublishTo(Publisher.Publish);
 ```
 
 ##Async
@@ -148,10 +174,10 @@ Shience.Shience.SetPublisher(new MyPublisher());
 Tests can be run in parallel using the `ExecuteAsync` method. When run in parallel the order in which they start is no longer randomized. To run tests in parallel, `await` the `ExecuteAsync` method:
 
 ```csharp
-var result = await science.Test(
-                                control: () => { Thread.Sleep(5000); return true; },
-                                candidate: () => { Thread.Sleep(5000); return true; })
-                          .ExecuteAsync();
+var result = await Shience.New<bool>("async")
+    .Test(control: () => { Thread.Sleep(5000); return true; },
+          candidate: () => { Thread.Sleep(5000); return true; })
+    .ExecuteAsync();
 ```
 
 ##Designing an experiment

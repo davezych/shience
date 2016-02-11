@@ -16,13 +16,12 @@ namespace Shience.Test
             {
                 var matched = false;
                 var testName = "DefaultComparerReturnsTrueWithSameResultOnPrimitives";
-                var science = Shience.New<bool>(testName, (e) =>
-                {
-                    matched = e.Matched;
-                });
 
-                var result = science.Test(control: () => true, candidate: () => true).Execute();
-
+                var result = Shience.New<bool>(testName)
+                    .Test(control: () => true, candidate: () => true)
+                    .PublishTo(r => matched = r.Matched)
+                    .Execute();
+                
                 Assert.True(matched);
             }
 
@@ -30,12 +29,10 @@ namespace Shience.Test
             public void DefaultComparerReturnsFalseWithDifferentResultOnPrimitives()
             {
                 var matched = false;
-                var science = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives", (e) =>
-                {
-                    matched = e.Matched;
-                });
-
-                var result = science.Test(control: () => true, candidate: () => false).Execute();
+                var result = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives")
+                    .Test(control: () => true, candidate: () => false)
+                    .PublishTo(e => matched = e.Matched)
+                    .Execute();
 
                 Assert.False(matched);
             }
@@ -44,14 +41,10 @@ namespace Shience.Test
             public void DefaultComparerReturnsTrueWithSameResultOnObject()
             {
                 var matched = false;
-                var science = Shience.New<TestNumber>("DefaultComparerReturnsTrueWithSameResultOnObject", (e) =>
-                {
-                    matched = e.Matched;
-                });
-
-                var result = science.Test(
-                    control: () => new TestNumber(1),
-                    candidate: () => new TestNumber(1)).Execute();
+                var result = Shience.New<TestNumber>("DefaultComparerReturnsTrueWithSameResultOnObject")
+                    .Test(control: () => new TestNumber(1), candidate: () => new TestNumber(1))
+                    .PublishTo(e => matched = e.Matched)
+                    .Execute();
 
                 Assert.True(matched);
             }
@@ -60,14 +53,10 @@ namespace Shience.Test
             public void DefaultComparerReturnsFalseWithDifferentResultOnObject()
             {
                 var matched = false;
-                var science = Shience.New<TestNumber>("DefaultComparerReturnsFalseWithDifferentResultOnObject", (e) =>
-                {
-                    matched = e.Matched;
-                });
-
-                var result = science.Test(
-                    control: () => new TestNumber(1),
-                    candidate: () => new TestNumber(2)).Execute();
+                var result = Shience.New<TestNumber>("DefaultComparerReturnsFalseWithDifferentResultOnObject")
+                    .Test(control: () => new TestNumber(1), candidate: () => new TestNumber(2))
+                    .PublishTo(e => matched = e.Matched)
+                    .Execute();
 
                 Assert.False(matched);
             }
@@ -76,14 +65,10 @@ namespace Shience.Test
             public void ComparerFuncReturnsCorrectTrueResult()
             {
                 var matched = false;
-                var science = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult", (e) =>
-                {
-                    matched = e.Matched;
-                });
-
-                var result = science
+                var result = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult")
                     .Test(control: () => true, candidate: () => true)
                     .WithComparer((a, b) => a == b)
+                    .PublishTo(e => matched = e.Matched)
                     .Execute();
 
                 Assert.True(matched);
@@ -93,14 +78,11 @@ namespace Shience.Test
             public void ComparerFuncReturnsCorrectFalseResult()
             {
                 var matched = false;
-                var science = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult", (e) =>
-                {
-                    matched = e.Matched;
-                });
-
-                var result = science
+                
+                var result = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult")
                     .Test(control: () => true, candidate: () => false)
                     .WithComparer((a, b) => a == b)
+                    .PublishTo(e => matched = e.Matched)
                     .Execute();
 
                 Assert.False(matched);
@@ -109,35 +91,28 @@ namespace Shience.Test
             [Fact]
             public void TestThrowsIfCandidateIsNull()
             {
-                var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull", (e) =>
-                {
-                });
+                var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull");
 
-                Assert.Throws<ArgumentNullException>(() => science.Test(() => true, null).Execute());
+                Assert.Throws<ArgumentNullException>(() => science.Test(() => true, null));
             }
 
             [Fact]
             public void ArgumentNullIsThrownIfControlIsNull()
             {
-                var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull", (e) =>
-                {
-                    
-                });
+                var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull");
 
-                Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true).Execute());
+                Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true));
             }
 
             [Fact]
             public void TestIsSkippedWhenWhereIsFalse()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsSkippedWhenWhereIsFalse", (e) =>
-                {
-                    ran = true;
-                });
-                var result = science
+
+                var result = Shience.New<bool>("TestIsSkippedWhenWhereIsFalse")
                     .Test(() => true, () => true)
                     .Where(() => false)
+                    .PublishTo(_ => ran = true)
                     .Execute();
 
                 Assert.True(result);
@@ -148,13 +123,11 @@ namespace Shience.Test
             public void TestIsNotSkippedWhenWhereIsTrue()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrue", (e) =>
-                {
-                    ran = true;
-                });
-                var result = science
+
+                var result = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrue")
                     .Test(() => true, () => true)
                     .Where(() => true)
+                    .PublishTo(_ => ran = true)
                     .Execute();
 
                 Assert.True(result);
@@ -165,15 +138,13 @@ namespace Shience.Test
             public void TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres", (e) =>
-                {
-                    ran = true;
-                });
-                var result = science
+
+                var result = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres")
                     .Test(() => true, () => true)
                     .Where(() => true)
                     .Where(() => true)
                     .Where(() => true)
+                    .PublishTo(_ => ran = true)
                     .Execute();
 
                 Assert.True(result);
@@ -184,15 +155,13 @@ namespace Shience.Test
             public void TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres", (e) =>
-                {
-                    ran = true;
-                });
-                var result = science
+                
+                var result = Shience.New<bool>("TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres")
                     .Test(() => true, () => true)
                     .Where(() => false)
                     .Where(() => false)
                     .Where(() => false)
+                    .PublishTo(_ => ran = true)
                     .Execute();
 
                 Assert.True(result);
@@ -203,15 +172,13 @@ namespace Shience.Test
             public void TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse()
             {
                 var ran = false;
-                var science = Shience.New<bool>("TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse", (e) =>
-                {
-                    ran = true;
-                });
-                var result = science
+                
+                var result = Shience.New<bool>("TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse")
                     .Test(() => true, () => true)
                     .Where(() => false)
                     .Where(() => true)
                     .Where(() => false)
+                    .PublishTo(_ => ran = true)
                     .Execute();
 
                 Assert.True(result);
@@ -221,23 +188,26 @@ namespace Shience.Test
             [Fact]
             public void TestThrowsInvalidOperationExceptionIfCalledMultipleTimes()
             {
-                var science = Shience.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes");
+                var science = Shience.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes")
+                    .Test(() => true, () => true);
 
-                Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true).Test(() => true, () => true).Execute());
+                Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true));
             }
 
             [Fact]
             public void ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled()
             {
-                var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled");
+                var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled")
+                    .Test(() => true, () => false)
+                    .RaiseOnMismatch();
 
-                Assert.Throws<MismatchException>(() => science.Test(() => true, () => false).RaiseOnMismatch().Execute());
+                Assert.Throws<MismatchException>(() => science.Execute());
             }
 
             [Fact]
             public void ExecuteThrowsIfTestNotCalledFirst()
             {
-                var science = Shience.New<bool>("ExecuteThrowsIfTestNotCalledFirst", (e) => { });
+                var science = Shience.New<bool>("ExecuteThrowsIfTestNotCalledFirst");
 
                 Assert.Throws<InvalidOperationException>(() => science.Execute());
             }
@@ -245,7 +215,7 @@ namespace Shience.Test
             [Fact]
             public async Task ExecuteAsyncThrowsIfTestNotCalledFirst()
             {
-                var science = Shience.New<bool>("ExecuteAsyncThrowsIfTestNotCalledFirst", (e) => { });
+                var science = Shience.New<bool>("ExecuteAsyncThrowsIfTestNotCalledFirst");
 
                 await Assert.ThrowsAsync<InvalidOperationException>(() => science.ExecuteAsync());
             }
@@ -253,12 +223,6 @@ namespace Shience.Test
         
         public sealed class TestAsync
         {
-            public TestAsync()
-            {
-                var fp = new FakePublisher();
-                Shience.SetPublisher(fp);
-            }
-            
             [Fact]
             public async Task TestsAreRunInParallel()
             {
@@ -278,7 +242,9 @@ namespace Shience.Test
                         Thread.Sleep(10);
                         output = "Candidate";
                         return true;
-                    }).ExecuteAsync();
+                    })
+                    .PublishTo(new FakePublisher().Publish)
+                    .ExecuteAsync();
 
                 Assert.Equal("Control", output);
             }

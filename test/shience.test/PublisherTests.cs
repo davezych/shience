@@ -1,5 +1,4 @@
-﻿using Shience.Test.Fakes;
-using Xunit;
+﻿using Xunit;
 
 namespace Shience.Test
 {
@@ -8,10 +7,8 @@ namespace Shience.Test
         [Fact]
         public void ShienceCanInstantiateWithPublisher()
         {
-            Shience.SetPublisher(new FakePublisher());
-
             var science = Shience.New<bool>("ShienceCanInstantiateFilePublisher");
-
+            
             Assert.NotNull(science);
         }
     }

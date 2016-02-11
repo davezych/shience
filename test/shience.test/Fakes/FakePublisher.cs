@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Shience.Publish;
 
 namespace Shience.Test.Fakes
 {
-    internal class FakePublisher : IPublisher
+    internal class FakePublisher
     {
         public void Publish<TResult>(ExperimentResult<TResult> result)
         {
