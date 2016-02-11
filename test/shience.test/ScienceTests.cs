@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Shience.Test.Fakes;
 using Shience.Test.TestObjects;
 using Xunit;
 
@@ -221,7 +220,7 @@ namespace Shience.Test
             [Fact]
             public void TestThrowsInvalidOperationExceptionIfCalledMultipleTimes()
             {
-                var science = Shience.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes");
+                var science = Shience.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes", (e) => { });
 
                 Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true).Test(() => true, () => true).Execute());
             }
@@ -229,7 +228,7 @@ namespace Shience.Test
             [Fact]
             public void ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled()
             {
-                var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled");
+                var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled", (e) => { });
 
                 Assert.Throws<MismatchException>(() => science.Test(() => true, () => false).RaiseOnMismatch().Execute());
             }
@@ -253,16 +252,10 @@ namespace Shience.Test
         
         public sealed class TestAsync
         {
-            public TestAsync()
-            {
-                var fp = new FakePublisher();
-                Shience.SetPublisher(fp);
-            }
-            
             [Fact]
             public async Task TestsAreRunInParallel()
             {
-                var science = Shience.New<bool>("TestsAreRunInParallel");
+                var science = Shience.New<bool>("TestsAreRunInParallel", (e) => { });
 
                 var output = string.Empty;
 
