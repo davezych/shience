@@ -5,10 +5,7 @@ A C# library for carefully refactoring critical paths. It's a .NET port(ish) of 
 Let's pretend you're changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
 ```csharp
-//Set a publisher
-Shience.SetPublisher(new FilePublisher(@"C:\file\path\to\results.txt"));
-
-var science = Shience.New<bool>("widget-permissions");
+var science = Shience.New<bool>("widget-permissions", (e) => { /*Publish results*/ });
 
 var userCanRead = science.Test(
         control: () => return UserPermissions.CheckUser(currentUser), 
@@ -124,23 +121,44 @@ var userCanRead = science.Test(
                          .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
 ```
 
-##Writing your own Publisher
-To write your own custom publisher (to write to a database, or send to a service or whatever) implement `IPublisher`:
+##Publishing
+When instantiating a new experiment you need to provide a publisher. The simplist way is to provide a lambda:
 
 ```csharp
-public class MyPublisher : IPublisher
-{
-    public void Publish<TResult>(ExperimentResult<TResult> result)
+Shience.New<bool>("widget-permissions", (experimentResults) => {
+    using(var sw = new StreamWriter(@"/my/file/path/results.txt"))
     {
-        //Write results somewhere
+        sw.Write(experimentResults.TestName);
+        sw.Write(experimentResults.Matched);
+        //etc
     }
-}
+});
 ```
 
-And once written, set the publisher in Shience setup:
+For more complex publishing, it's best to create a class with a `void<TResult>(ExperimentResult<TResult>)` method. For instance, if you're using Entity Framework and want to publish to your database:
 
 ```csharp
-Shience.Shience.SetPublisher(new MyPublisher());
+public class DatabasePublisher
+{
+    MyEfContext _context;
+    public DatabasePublisher(MyEfContext context)
+    {
+        _context = context;
+    }
+
+    public void Publish<TResult>(ExperimentResult<TResult> e)
+    {
+        _context.PublishingResults.Add(new PublishingResult {
+            TestName = e.TestName,
+            Matched = e.Matched,
+            //etc
+        });
+
+        _context.SaveChanges();
+    }
+}
+
+Shience.New<bool>("widget-permissions", new DatabasePublisher(myEfContext).Publish);
 ```
 
 ##Async
