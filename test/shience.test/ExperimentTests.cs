@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Shience.Test.Fakes;
@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Shience.Test
 {
-    public sealed class ScienceTests
+    public sealed class ExperimentTests
     {
         public sealed class Test
         {
