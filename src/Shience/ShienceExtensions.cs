@@ -8,129 +8,129 @@ namespace Shience
 {
     public static class ShienceExtensions
     {
-        public static Science<TResult> PublishTo<TResult>(
-            [NotNull]this Science<TResult> science, [NotNull]Action<ExperimentResult<TResult>> publish)
+        public static Experiment<TResult> PublishTo<TResult>(
+            [NotNull]this Experiment<TResult> experiment, [NotNull]Action<ExperimentResult<TResult>> publish)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (publish == null) throw new ArgumentNullException(nameof(publish));
 
-            science.Publish.Add(publish);
-            return science;
+            experiment.Publish.Add(publish);
+            return experiment;
         }
 
-        public static Science<TResult> Test<TResult>(
-            [NotNull]this Science<TResult> science, [NotNull]Func<TResult> control, [NotNull]Func<TResult> candidate)
+        public static Experiment<TResult> Test<TResult>(
+            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<TResult> control, [NotNull]Func<TResult> candidate)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (control == null) throw new ArgumentNullException(nameof(control));
             if (candidate == null) throw new ArgumentNullException(nameof(candidate));
 
-            if (science.Control != null || science.Candidate != null)
+            if (experiment.Control != null || experiment.Candidate != null)
             {
                 var message = $"{nameof(Test)} may not be called multiple times.";
                 throw new InvalidOperationException(message);
             }
 
-            science.Control = control;
-            science.Candidate = candidate;
+            experiment.Control = control;
+            experiment.Candidate = candidate;
 
-            return science;
+            return experiment;
         }
 
-        public static Science<TResult> WithComparer<TResult>(
-            [NotNull]this Science<TResult> science, [NotNull]Func<TResult, TResult, bool> comparer)
+        public static Experiment<TResult> WithComparer<TResult>(
+            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<TResult, TResult, bool> comparer)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
 
-            if (science.Comparer != null)
+            if (experiment.Comparer != null)
             {
                 var message = $"{nameof(WithComparer)} may not be called multiple times.";
                 throw new InvalidOperationException(message);
             }
 
-            science.Comparer = comparer;
+            experiment.Comparer = comparer;
 
-            return science;
+            return experiment;
         }
 
-        public static Science<TResult> WithContext<TResult>(
-            [NotNull]this Science<TResult> science, dynamic context)
+        public static Experiment<TResult> WithContext<TResult>(
+            [NotNull]this Experiment<TResult> experiment, dynamic context)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             
-            science.Context = context; // may be null
-            return science;
+            experiment.Context = context; // may be null
+            return experiment;
         }
 
-        public static Science<TResult> Where<TResult>(
-            [NotNull]this Science<TResult> science, [NotNull]Func<bool> predicate)
+        public static Experiment<TResult> Where<TResult>(
+            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<bool> predicate)
         {
-            if(science == null) throw new ArgumentNullException(nameof(science));
+            if(experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            science.Predicates.Add(predicate);
+            experiment.Predicates.Add(predicate);
 
-            return science;
+            return experiment;
         }
 
-        public static Science<TResult> RaiseOnMismatch<TResult>([NotNull]this Science<TResult> science)
+        public static Experiment<TResult> RaiseOnMismatch<TResult>([NotNull]this Experiment<TResult> experiment)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
 
-            science.RaiseOnMismatch = true;
+            experiment.RaiseOnMismatch = true;
 
-            return science;
+            return experiment;
         }
 
-        public static TResult Execute<TResult>([NotNull]this Science<TResult> science)
+        public static TResult Execute<TResult>([NotNull]this Experiment<TResult> experiment)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
 
-            if (science.Control == null || science.Candidate == null)
+            if (experiment.Control == null || experiment.Candidate == null)
             {
                 throw new InvalidOperationException(
-                    "Call Science.Test<TResult>(this Science<TResult> science, Func<TResult> control, Func<TResult> candidate) first.");
+                    "Call Experiment.Test<TResult>(this Experiment<TResult> Experiment, Func<TResult> control, Func<TResult> candidate) first.");
             }
 
-            if (science.Predicates.Any(p => !p()))
+            if (experiment.Predicates.Any(p => !p()))
             {
-                return RunAsync(science.Control).Result;
+                return RunAsync(experiment.Control).Result;
             }
 
             var experimentResult = new ExperimentResult<TResult>
             {
-                TestName = science.TestName,
-                ComparerFunc = science.Comparer,
+                TestName = experiment.TestName,
+                ComparerFunc = experiment.Comparer,
             };
 
-            experimentResult.Context = science.Context;
+            experimentResult.Context = experiment.Context;
             
             TestResult<TResult> controlResult, candidateResult;
 
             if (new Random().Next() % 2 == 0)
             {
                 experimentResult.ControlRanFirst = true;
-                controlResult = InternalTestAsync(science.Control).Result;
-                candidateResult = InternalTestAsync(science.Candidate).Result;
+                controlResult = InternalTestAsync(experiment.Control).Result;
+                candidateResult = InternalTestAsync(experiment.Candidate).Result;
             }
             else
             {
-                candidateResult = InternalTestAsync(science.Candidate).Result;
-                controlResult = InternalTestAsync(science.Control).Result;
+                candidateResult = InternalTestAsync(experiment.Candidate).Result;
+                controlResult = InternalTestAsync(experiment.Control).Result;
             }
 
             experimentResult.ControlResult = controlResult;
             experimentResult.CandidateResult = candidateResult;
 
-            science.Publish.ForEach(p => p(experimentResult));
+            experiment.Publish.ForEach(p => p(experimentResult));
             
             if (controlResult.Exception != null)
             {
                 throw controlResult.Exception;
             }
 
-            if (science.RaiseOnMismatch)
+            if (experiment.RaiseOnMismatch)
             {
                 throw new MismatchException($"Control: {controlResult.Result}, Candidate: {candidateResult.Result}");
             }
@@ -138,43 +138,43 @@ namespace Shience
             return controlResult.Result;
         }
 
-        public static async Task<TResult> ExecuteAsync<TResult>([NotNull]this Science<TResult> science)
+        public static async Task<TResult> ExecuteAsync<TResult>([NotNull]this Experiment<TResult> experiment)
         {
-            if (science == null) throw new ArgumentNullException(nameof(science));
+            if (experiment == null) throw new ArgumentNullException(nameof(experiment));
 
-            if (science.Control == null || science.Candidate == null)
+            if (experiment.Control == null || experiment.Candidate == null)
             {
                 throw new InvalidOperationException(
-                    "Call Science.Test<TResult>(this Science<TResult> science, Func<TResult> control, Func<TResult> candidate) first.");
+                    "Call Experiment.Test<TResult>(this Experiment<TResult> Experiment, Func<TResult> control, Func<TResult> candidate) first.");
             }
 
-            if (science.Predicates.Any(p => !p()))
+            if (experiment.Predicates.Any(p => !p()))
             {
-                return RunAsync(science.Control).Result;
+                return RunAsync(experiment.Control).Result;
             }
 
             var experimentResult = new ExperimentResult<TResult>
             {
-                TestName = science.TestName,
-                ComparerFunc = science.Comparer,
+                TestName = experiment.TestName,
+                ComparerFunc = experiment.Comparer,
             };
 
-            experimentResult.Context = science.Context;
+            experimentResult.Context = experiment.Context;
             
-            var controlTask = InternalTestAsync(science.Control);
-            var candidateTask = InternalTestAsync(science.Candidate);
+            var controlTask = InternalTestAsync(experiment.Control);
+            var candidateTask = InternalTestAsync(experiment.Candidate);
 
             experimentResult.ControlResult = await controlTask;
             experimentResult.CandidateResult = await candidateTask;
 
-            science.Publish.ForEach(p => p(experimentResult));
+            experiment.Publish.ForEach(p => p(experimentResult));
 
             if (experimentResult.ControlResult.Exception != null)
             {
                 throw experimentResult.ControlResult.Exception;
             }
 
-            if (science.RaiseOnMismatch)
+            if (experiment.RaiseOnMismatch)
             {
                 throw new MismatchException($"Control: {experimentResult.ControlResult.Result}, Candidate: {experimentResult.CandidateResult.Result}");
             }

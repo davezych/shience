@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace Shience
 {
-    public sealed class Science<TResult>
+    public sealed class Experiment<TResult>
     {
         internal string TestName { get; }
         internal IList<Action<ExperimentResult<TResult>>> Publish { get; } = new List<Action<ExperimentResult<TResult>>>();
@@ -15,7 +15,7 @@ namespace Shience
         internal IList<Func<bool>> Predicates { get; set; } = new List<Func<bool>>();
         internal bool RaiseOnMismatch { get; set; }
 
-        internal Science([NotNull]string testName)
+        internal Experiment([NotNull]string testName)
         {
             if (string.IsNullOrWhiteSpace(testName))
             {
