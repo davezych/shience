@@ -5,18 +5,16 @@ A C# library for carefully refactoring critical paths. It's a .NET(ish) port of 
 Let's pretend you're changing the way you're handling permissions. Unit tests help, but it's useful to compare behaviors under load, in real conditions. Shience helps with that.
 
 ```csharp
-var publisher = new FilePublisher(@"C:\file\path\to\results.log");
-
-// create a science object
+//Create an experiment
 var userCanRead = Science.New<bool>("widget-permissions")
     .Test(control: () => UserPermissions.CheckUser(currentUser), 
           candidate: () => User.Can(currentUser, Permission.Read))
-    .PublishTo(publisher.Publish)
+    .PublishTo((e) => { Console.WriteLine(e.Matched); })
     .Execute();
 
 if(userCanRead)
 {
-    //do things!
+    //Do things!
 }
 ```
 
