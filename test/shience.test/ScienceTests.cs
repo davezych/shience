@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Shience.Test
 {
-    public sealed class ShienceTests
+    public sealed class ScienceTests
     {
         public sealed class New
         {
