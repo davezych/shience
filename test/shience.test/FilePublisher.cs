@@ -1,9 +1,9 @@
-﻿using JetBrains.Annotations;
-using Jil;
-using System;
+﻿using System;
 using System.IO;
+using JetBrains.Annotations;
+using Jil;
 
-namespace Shience.Publish
+namespace Shience.Test
 {
     public sealed class FilePublisher
     {
