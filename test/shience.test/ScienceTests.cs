@@ -17,7 +17,7 @@ namespace Shience.Test
                 var matched = false;
                 var testName = "DefaultComparerReturnsTrueWithSameResultOnPrimitives";
 
-                var result = Shience.New<bool>(testName)
+                var result = Science.New<bool>(testName)
                     .Test(control: () => true, candidate: () => true)
                     .PublishTo(r => matched = r.Matched)
                     .Execute();
@@ -29,7 +29,7 @@ namespace Shience.Test
             public void DefaultComparerReturnsFalseWithDifferentResultOnPrimitives()
             {
                 var matched = false;
-                var result = Shience.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives")
+                var result = Science.New<bool>("DefaultComparerReturnsFalseWithDifferentResultOnPrimitives")
                     .Test(control: () => true, candidate: () => false)
                     .PublishTo(e => matched = e.Matched)
                     .Execute();
@@ -41,7 +41,7 @@ namespace Shience.Test
             public void DefaultComparerReturnsTrueWithSameResultOnObject()
             {
                 var matched = false;
-                var result = Shience.New<TestNumber>("DefaultComparerReturnsTrueWithSameResultOnObject")
+                var result = Science.New<TestNumber>("DefaultComparerReturnsTrueWithSameResultOnObject")
                     .Test(control: () => new TestNumber(1), candidate: () => new TestNumber(1))
                     .PublishTo(e => matched = e.Matched)
                     .Execute();
@@ -53,7 +53,7 @@ namespace Shience.Test
             public void DefaultComparerReturnsFalseWithDifferentResultOnObject()
             {
                 var matched = false;
-                var result = Shience.New<TestNumber>("DefaultComparerReturnsFalseWithDifferentResultOnObject")
+                var result = Science.New<TestNumber>("DefaultComparerReturnsFalseWithDifferentResultOnObject")
                     .Test(control: () => new TestNumber(1), candidate: () => new TestNumber(2))
                     .PublishTo(e => matched = e.Matched)
                     .Execute();
@@ -65,7 +65,7 @@ namespace Shience.Test
             public void ComparerFuncReturnsCorrectTrueResult()
             {
                 var matched = false;
-                var result = Shience.New<bool>("ComparerFuncReturnsCorrectTrueResult")
+                var result = Science.New<bool>("ComparerFuncReturnsCorrectTrueResult")
                     .Test(control: () => true, candidate: () => true)
                     .WithComparer((a, b) => a == b)
                     .PublishTo(e => matched = e.Matched)
@@ -79,7 +79,7 @@ namespace Shience.Test
             {
                 var matched = false;
                 
-                var result = Shience.New<bool>("ComparerFuncReturnsCorrectFalseResult")
+                var result = Science.New<bool>("ComparerFuncReturnsCorrectFalseResult")
                     .Test(control: () => true, candidate: () => false)
                     .WithComparer((a, b) => a == b)
                     .PublishTo(e => matched = e.Matched)
@@ -91,7 +91,7 @@ namespace Shience.Test
             [Fact]
             public void TestThrowsIfCandidateIsNull()
             {
-                var science = Shience.New<bool>("NotTestsAreRunIfCandidateIsNull");
+                var science = Science.New<bool>("NotTestsAreRunIfCandidateIsNull");
 
                 Assert.Throws<ArgumentNullException>(() => science.Test(() => true, null));
             }
@@ -99,7 +99,7 @@ namespace Shience.Test
             [Fact]
             public void ArgumentNullIsThrownIfControlIsNull()
             {
-                var science = Shience.New<bool>("ArgumentNullIsThrownIfControlIsNull");
+                var science = Science.New<bool>("ArgumentNullIsThrownIfControlIsNull");
 
                 Assert.Throws<ArgumentNullException>(() => science.Test(null, () => true));
             }
@@ -109,7 +109,7 @@ namespace Shience.Test
             {
                 var ran = false;
 
-                var result = Shience.New<bool>("TestIsSkippedWhenWhereIsFalse")
+                var result = Science.New<bool>("TestIsSkippedWhenWhereIsFalse")
                     .Test(() => true, () => true)
                     .Where(() => false)
                     .PublishTo(_ => ran = true)
@@ -124,7 +124,7 @@ namespace Shience.Test
             {
                 var ran = false;
 
-                var result = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrue")
+                var result = Science.New<bool>("TestIsNotSkippedWhenWhereIsTrue")
                     .Test(() => true, () => true)
                     .Where(() => true)
                     .PublishTo(_ => ran = true)
@@ -139,7 +139,7 @@ namespace Shience.Test
             {
                 var ran = false;
 
-                var result = Shience.New<bool>("TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres")
+                var result = Science.New<bool>("TestIsNotSkippedWhenWhereIsTrueWithMultipleChainedWheres")
                     .Test(() => true, () => true)
                     .Where(() => true)
                     .Where(() => true)
@@ -156,7 +156,7 @@ namespace Shience.Test
             {
                 var ran = false;
                 
-                var result = Shience.New<bool>("TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres")
+                var result = Science.New<bool>("TestIsSkippedWhenWhereIsFalseWithMultipleChainedWheres")
                     .Test(() => true, () => true)
                     .Where(() => false)
                     .Where(() => false)
@@ -173,7 +173,7 @@ namespace Shience.Test
             {
                 var ran = false;
                 
-                var result = Shience.New<bool>("TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse")
+                var result = Science.New<bool>("TestIsSkippedWhenMultipleChainedWheresWithMixOfTrueFalse")
                     .Test(() => true, () => true)
                     .Where(() => false)
                     .Where(() => true)
@@ -188,7 +188,7 @@ namespace Shience.Test
             [Fact]
             public void TestThrowsInvalidOperationExceptionIfCalledMultipleTimes()
             {
-                var science = Shience.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes")
+                var science = Science.New<bool>("TestThrowsInvalidOperationExceptionIfCalledMultipleTimes")
                     .Test(() => true, () => true);
 
                 Assert.Throws<InvalidOperationException>(() => science.Test(() => true, () => true));
@@ -197,7 +197,7 @@ namespace Shience.Test
             [Fact]
             public void ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled()
             {
-                var science = Shience.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled")
+                var science = Science.New<bool>("ExecuteThrowsMismatchExceptionIfRaiseOnMismatchCalled")
                     .Test(() => true, () => false)
                     .RaiseOnMismatch();
 
@@ -207,7 +207,7 @@ namespace Shience.Test
             [Fact]
             public void ExecuteThrowsIfTestNotCalledFirst()
             {
-                var science = Shience.New<bool>("ExecuteThrowsIfTestNotCalledFirst");
+                var science = Science.New<bool>("ExecuteThrowsIfTestNotCalledFirst");
 
                 Assert.Throws<InvalidOperationException>(() => science.Execute());
             }
@@ -215,7 +215,7 @@ namespace Shience.Test
             [Fact]
             public async Task ExecuteAsyncThrowsIfTestNotCalledFirst()
             {
-                var science = Shience.New<bool>("ExecuteAsyncThrowsIfTestNotCalledFirst");
+                var science = Science.New<bool>("ExecuteAsyncThrowsIfTestNotCalledFirst");
 
                 await Assert.ThrowsAsync<InvalidOperationException>(() => science.ExecuteAsync());
             }
@@ -226,7 +226,7 @@ namespace Shience.Test
             [Fact]
             public async Task TestsAreRunInParallel()
             {
-                var science = Shience.New<bool>("TestsAreRunInParallel");
+                var science = Science.New<bool>("TestsAreRunInParallel");
 
                 var output = string.Empty;
 

@@ -10,13 +10,13 @@ namespace Shience.Test
             [Fact]
             public void InstantiatingScienceThrowsArgumentNullIfTestNameIsNull()
             {
-                Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(null));
+                Assert.Throws<ArgumentNullException>(() => Science.New<bool>(null));
             }
 
             [Fact]
             public void InstantiatingScienceThrowsArgumentNullIfTestNameIsEmptyString()
             {
-                Assert.Throws<ArgumentNullException>(() => Shience.New<bool>(string.Empty));
+                Assert.Throws<ArgumentNullException>(() => Science.New<bool>(string.Empty));
             }
         }
     }

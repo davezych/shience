@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace Shience
 {
-    public static class Shience
+    public static class Science
     {
         public static Experiment<TResult> New<TResult>([NotNull]string name)
         {
