@@ -181,7 +181,7 @@ var userCanRead = Science.New<bool>("widget-permissions")
     .Execute();
 ```
 
-An `ExperimentResult` gives you lots of useful information, such as:
+The `ExperimentResult` object gives you lots of useful information, such as:
 
 - The name of the test
 - The result of the control and candidate
