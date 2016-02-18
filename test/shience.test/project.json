@@ -1,7 +1,7 @@
 {
-  "version": "0.0.1-beta4",
+  "version": "0.0.1-beta5",
   "description": "Shience.Test Class Library",
-  "authors": [ "david.zych", "Johann Dirry <movgp0@gmail.com>" ],
+  "authors": [ "Dave Zych <dave@davidzych.com>", "Johann Dirry <movgp0@gmail.com>" ],
   "tags": [ "" ],
   "projectUrl": "https://github.com/davezych/shience",
   "licenseUrl": "https://opensource.org/licenses/MIT",
