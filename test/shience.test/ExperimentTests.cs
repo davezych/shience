@@ -219,6 +219,36 @@ namespace Shience.Test
 
                 await Assert.ThrowsAsync<InvalidOperationException>(() => science.ExecuteAsync());
             }
+
+            [Fact]
+            public void ExecuteRecordsStartTimeInUtcOnExperimentResult()
+            {
+                var experiment = Science.New<bool>("ExecuteRecordsStartTimeInUtcOnExperimentResult");
+
+                var startDate = DateTime.Now;
+
+                experiment.Test(() => true, () => true)
+                    .PublishTo((e) => startDate = e.UtcStartDate)
+                    .Execute();
+
+                Assert.True(startDate != DateTime.MinValue);
+                Assert.True(startDate.Kind == DateTimeKind.Utc);
+            }
+
+            [Fact]
+            public async Task ExecuteAsyncRecordsStartTimeInUtcOnExperimentResult()
+            {
+                var experiment = Science.New<bool>("ExecuteRecordsStartTimeInUtcOnExperimentResult");
+
+                var startDate = DateTime.Now;
+
+                await experiment.Test(() => true, () => true)
+                    .PublishTo((e) => startDate = e.UtcStartDate)
+                    .ExecuteAsync();
+
+                Assert.True(startDate != DateTime.MinValue);
+                Assert.True(startDate.Kind == DateTimeKind.Utc);
+            }
         }
         
         public sealed class TestAsync

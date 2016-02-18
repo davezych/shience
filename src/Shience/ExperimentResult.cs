@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Shience
 {
@@ -11,11 +10,8 @@ namespace Shience
         public bool ControlRanFirst { get; set; }
         public dynamic Context { get; internal set; }
         public Func<TResult, TResult, bool> ComparerFunc { get; set; }
-
-        public ExperimentResult()
-        {
-        }
-
+        public DateTime UtcStartDate { get; set; }
+        
         public bool Matched => ComparerFunc?.Invoke(ControlResult.Result, CandidateResult.Result) 
             ?? ControlResult.Result.Equals(CandidateResult.Result);
     }

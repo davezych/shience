@@ -102,10 +102,10 @@ namespace Shience
             {
                 TestName = experiment.TestName,
                 ComparerFunc = experiment.Comparer,
+                Context = experiment.Context,
+                UtcStartDate = DateTime.UtcNow,
             };
 
-            experimentResult.Context = experiment.Context;
-            
             TestResult<TResult> controlResult, candidateResult;
 
             if (new Random().Next() % 2 == 0)
@@ -157,10 +157,10 @@ namespace Shience
             {
                 TestName = experiment.TestName,
                 ComparerFunc = experiment.Comparer,
+                Context = experiment.Context,
+                UtcStartDate = DateTime.UtcNow,
             };
 
-            experimentResult.Context = experiment.Context;
-            
             var controlTask = InternalTestAsync(experiment.Control);
             var candidateTask = InternalTestAsync(experiment.Candidate);
 

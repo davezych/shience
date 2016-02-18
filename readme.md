@@ -44,7 +44,7 @@ Sometimes you don't want to science. If that's the case, you can specify a predi
 var userCanRead = Science.New<bool>("conditional")
     .Test(control: () => return UserPermissions.CheckUser(currentUser),
           candidate: () => return User.Can(currentUser, Permission.Read))
-    .Where(() => !user.IsAdmin) //Only run if user is not an admin
+    .Where(() => !currentUser.IsAdmin) //Only run if user is not an admin
     .Execute();
 ```
 
@@ -68,8 +68,8 @@ You can also chain `Where` calls if you have multiple conditions:
 var userCanRead = Science.New<bool>("conditional")
     .Test(control: () => return UserPermissions.CheckUser(currentUser),
           candidate: () => return User.Can(currentUser, Permission.Read))
-    .Where(() => new Random().Next() % 2 == 0)
-    .Where(() => !currentUser.IsAdmin)
+    .Where(() => new Random().Next() % 2 == 0) //Run for 50% of requests
+    .Where(() => !currentUser.IsAdmin) // Only if the user is not an admin
     .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 16) //Don't run at peak hours
     .Execute();
 ```
@@ -127,8 +127,18 @@ var userCanRead = Science.New<bool>("compare")
     .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
 ```
 
-##Writing your own Publisher
-To write your own custom publisher (to write to a log, database, send to a service, or whatever):
+##Publishing
+Experiments aren't helpful if you don't write down the results. To record results, call the `PublishTo` method and give it an action. For simple publishing, you can specify it inline:
+
+```csharp
+var userCanRead = Science.New<bool>("widget-permissions")
+    .Test(control: () => return UserPermissions.CheckUser(currentUser),
+          candidate: () => return User.Can(currentUser, Permission.Read))
+    .PublishTo((e) => { Console.WriteLine($"{e.TestName} result: {e.Matched}") })
+    .Execute();
+```
+
+For more advanced publishing (to write to a log, database, send to a service, or whatever) write a generic method that takes an `ExperimentResult<TResult>`:
 
 ```csharp
 public IPublisher
@@ -145,7 +155,7 @@ public class MyPublisher : IPublisher
 }
 ```
 
-Use dependency injection to inject the publisher: 
+In most circumstances it's best to use dependency injection to inject the publisher:
 
 ```csharp
 public class MyTestProxy
@@ -161,11 +171,24 @@ public class MyTestProxy
 }
 ```
 
-And once written, set the publisher:
+And once written, set the action when initializing an experiment:
 
 ```csharp
-science.PublishTo(Publisher.Publish);
+var userCanRead = Science.New<bool>("widget-permissions")
+    .Test(control: () => UserPermissions.CheckUser(currentUser),
+          candidate: () => User.Can(currentUser, Permission.Read))
+    .PublishTo(Publisher.Publish)
+    .Execute();
 ```
+
+The `ExperimentResult` object gives you lots of useful information, such as:
+
+- The name of the test
+- The result of the control and candidate
+- Whether the results matched
+- Whether the control or candidate test ran first (if not async)
+- Any context objects you set
+- Start time in UTC of the test
 
 ##Async
 
