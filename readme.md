@@ -8,7 +8,7 @@ Let's pretend you're changing the way you're handling permissions. Unit tests he
 var publisher = new FilePublisher(@"C:\file\path\to\results.log");
 
 // create a science object
-var userCanRead = Shience.New<bool>("widget-permissions")
+var userCanRead = Science.New<bool>("widget-permissions")
     .Test(control: () => UserPermissions.CheckUser(currentUser), 
           candidate: () => User.Can(currentUser, Permission.Read))
     .PublishTo(publisher.Publish)
@@ -26,7 +26,7 @@ Shience will run the control (the old way) and the candidate (the new way) in ra
 Test results sometimes aren't useful without context. You can add objects that you might feel are useful when viewing comparison results. The context objects will be published with the rest of the data.
 
 ```csharp
-var userCanRead = Shience.New<bool>("context")
+var userCanRead = Science.New<bool>("context")
     .Test(control: () => return UserPermissions.CheckUser(currentUser), 
           candidate: () => return User.Can(currentUser, Permission.Read))
     .WithContext(new { 
@@ -43,7 +43,7 @@ var userCanRead = Shience.New<bool>("context")
 Sometimes you don't want to science. If that's the case, you can specify a predicate indicating whether or not to skip the test using the `Where` method. A value of `true` indicates the test will run, a value of `false` indicates the test should be *skipped*.
 
 ```csharp
-var userCanRead = Shience.New<bool>("conditional")
+var userCanRead = Science.New<bool>("conditional")
     .Test(control: () => return UserPermissions.CheckUser(currentUser),
           candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => !user.IsAdmin) //Only run if user is not an admin
@@ -54,7 +54,7 @@ var userCanRead = Shience.New<bool>("conditional")
 The `Where` method can be used to specify a percentage of time an experiment should run:
 
 ```csharp
-var userCanRead = Shience.New<bool>("conditional")
+var userCanRead = Science.New<bool>("conditional")
     .Test(control: () => return UserPermissions.CheckUser(currentUser),
           candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 10 == 0) //Run 10% of all requests
@@ -67,7 +67,7 @@ This allows you to start small, ensure performance is okay and fix any immediate
 You can also chain `Where` calls if you have multiple conditions:
 
 ```csharp
-var userCanRead = Shience.New<bool>("conditional")
+var userCanRead = Science.New<bool>("conditional")
     .Test(control: () => return UserPermissions.CheckUser(currentUser),
           candidate: () => return User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 2 == 0)
@@ -113,7 +113,7 @@ private class TestHelper
 then
 
 ```csharp
-var result = Shience.New<bool>("compare")
+var result = Science.New<bool>("compare")
     .Test(control: () => new TestHelper(1),
           candidate: () => TestHelper(2))
     .Execute();
@@ -123,7 +123,7 @@ var result = Shience.New<bool>("compare")
 You can also pass in a comparing `Func<>` to the `WithComparer` method.
 
 ```csharp
-var userCanRead = Shience.New<bool>("compare")
+var userCanRead = Science.New<bool>("compare")
     .Test(control: () => return UserPermissions.CheckUser(currentUser), 
           candidate: () => return User.Can(currentUser, Permission.Read))
     .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
@@ -174,7 +174,7 @@ science.PublishTo(Publisher.Publish);
 Tests can be run in parallel using the `ExecuteAsync` method. When run in parallel the order in which they start is no longer randomized. To run tests in parallel, `await` the `ExecuteAsync` method:
 
 ```csharp
-var result = await Shience.New<bool>("async")
+var result = await Science.New<bool>("async")
     .Test(control: () => { Thread.Sleep(5000); return true; },
           candidate: () => { Thread.Sleep(5000); return true; })
     .ExecuteAsync();

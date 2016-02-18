@@ -1,27 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Shience
 {
-    public sealed class Science<TResult>
+    public static class Science
     {
-        internal string TestName { get; }
-        internal IList<Action<ExperimentResult<TResult>>> Publish { get; } = new List<Action<ExperimentResult<TResult>>>();
-        internal Func<TResult> Control { get; set; }
-        internal Func<TResult> Candidate { get; set; }
-        internal Func<TResult, TResult, bool> Comparer { get; set; }
-        internal dynamic Context { get; set; }
-        internal IList<Func<bool>> Predicates { get; set; } = new List<Func<bool>>();
-        internal bool RaiseOnMismatch { get; set; }
-
-        internal Science([NotNull]string testName)
+        public static Experiment<TResult> New<TResult>([NotNull]string name)
         {
-            if (string.IsNullOrWhiteSpace(testName))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentNullException(nameof(testName));
+                throw new ArgumentNullException(nameof(name));
             }
-            TestName = testName;
+            
+            return new Experiment<TResult>(name);
         }
     }
 }
