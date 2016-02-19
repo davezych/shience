@@ -9,7 +9,7 @@ Let's pretend you're changing the way you're handling permissions. Unit tests he
 var userCanRead = Science.New<bool>("widget-permissions")
     .Test(control: () => UserPermissions.CheckUser(currentUser), 
           candidate: () => User.Can(currentUser, Permission.Read))
-    .PublishTo((e) => { Console.WriteLine(e.Matched); })
+    .PublishTo(e => { Console.WriteLine(e.Matched); })
     .Execute();
 
 if(userCanRead)
@@ -25,8 +25,8 @@ Test results sometimes aren't useful without context. You can add objects that y
 
 ```csharp
 var userCanRead = Science.New<bool>("context")
-    .Test(control: () => return UserPermissions.CheckUser(currentUser), 
-          candidate: () => return User.Can(currentUser, Permission.Read))
+    .Test(control: () => UserPermissions.CheckUser(currentUser), 
+          candidate: () => User.Can(currentUser, Permission.Read))
     .WithContext(new { 
         Class = nameof(MyClass),
         Method = nameof(MyMethod),
@@ -42,8 +42,8 @@ Sometimes you don't want to science. If that's the case, you can specify a predi
 
 ```csharp
 var userCanRead = Science.New<bool>("conditional")
-    .Test(control: () => return UserPermissions.CheckUser(currentUser),
-          candidate: () => return User.Can(currentUser, Permission.Read))
+    .Test(control: () => UserPermissions.CheckUser(currentUser),
+          candidate: () => User.Can(currentUser, Permission.Read))
     .Where(() => !currentUser.IsAdmin) //Only run if user is not an admin
     .Execute();
 ```
@@ -53,8 +53,8 @@ The `Where` method can be used to specify a percentage of time an experiment sho
 
 ```csharp
 var userCanRead = Science.New<bool>("conditional")
-    .Test(control: () => return UserPermissions.CheckUser(currentUser),
-          candidate: () => return User.Can(currentUser, Permission.Read))
+    .Test(control: () => UserPermissions.CheckUser(currentUser),
+          candidate: () => User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 10 == 0) //Run 10% of all requests
     .Execute();
 ```
@@ -66,8 +66,8 @@ You can also chain `Where` calls if you have multiple conditions:
 
 ```csharp
 var userCanRead = Science.New<bool>("conditional")
-    .Test(control: () => return UserPermissions.CheckUser(currentUser),
-          candidate: () => return User.Can(currentUser, Permission.Read))
+    .Test(control: () => UserPermissions.CheckUser(currentUser),
+          candidate: () => User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 2 == 0) //Run for 50% of requests
     .Where(() => !currentUser.IsAdmin) // Only if the user is not an admin
     .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 16) //Don't run at peak hours
@@ -122,8 +122,8 @@ You can also pass in a comparing `Func<>` to the `WithComparer` method.
 
 ```csharp
 var userCanRead = Science.New<bool>("compare")
-    .Test(control: () => return UserPermissions.CheckUser(currentUser), 
-          candidate: () => return User.Can(currentUser, Permission.Read))
+    .Test(control: () => UserPermissions.CheckUser(currentUser), 
+          candidate: () => User.Can(currentUser, Permission.Read))
     .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
 ```
 
@@ -132,9 +132,9 @@ Experiments aren't helpful if you don't write down the results. To record result
 
 ```csharp
 var userCanRead = Science.New<bool>("widget-permissions")
-    .Test(control: () => return UserPermissions.CheckUser(currentUser),
-          candidate: () => return User.Can(currentUser, Permission.Read))
-    .PublishTo((e) => { Console.WriteLine($"{e.TestName} result: {e.Matched}") })
+    .Test(control: () => UserPermissions.CheckUser(currentUser),
+          candidate: () => User.Can(currentUser, Permission.Read))
+    .PublishTo(e => Console.WriteLine($"{e.TestName} result: {e.Matched}"))
     .Execute();
 ```
 
