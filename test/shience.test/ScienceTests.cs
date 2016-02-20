@@ -12,11 +12,17 @@ namespace Shience.Test
             {
                 Assert.Throws<ArgumentNullException>(() => Science.New<bool>(null));
             }
-
+            
             [Fact]
             public void InstantiatingScienceThrowsArgumentNullIfTestNameIsEmptyString()
             {
                 Assert.Throws<ArgumentNullException>(() => Science.New<bool>(string.Empty));
+            }
+            
+            [Fact]
+            public void InstantiatingScienceShouldNotReturnNull()
+            {
+                Assert.NotNull(Science.New<bool>("name"));
             }
         }
     }

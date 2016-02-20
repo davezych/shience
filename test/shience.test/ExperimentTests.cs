@@ -228,7 +228,7 @@ namespace Shience.Test
                 var startDate = DateTime.Now;
 
                 experiment.Test(() => true, () => true)
-                    .PublishTo((e) => startDate = e.UtcStartDate)
+                    .PublishTo((e) => startDate = e.ControlResult.StartTimeUtc)
                     .Execute();
 
                 Assert.True(startDate != DateTime.MinValue);
@@ -243,7 +243,7 @@ namespace Shience.Test
                 var startDate = DateTime.Now;
 
                 await experiment.Test(() => true, () => true)
-                    .PublishTo((e) => startDate = e.UtcStartDate)
+                    .PublishTo((e) => startDate = e.ControlResult.StartTimeUtc)
                     .ExecuteAsync();
 
                 Assert.True(startDate != DateTime.MinValue);
