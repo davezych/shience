@@ -23,6 +23,7 @@ namespace Shience
             }
 
             var experimentResult = await ExecuteExperimentAsync(experiment);
+            experimentResult.Matched = experiment.AreResultsMatching(experimentResult);
             experiment.PublishResults(experimentResult);
 
             if (experimentResult.ControlResult.Exception != null)

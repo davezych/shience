@@ -67,7 +67,20 @@ namespace Shience.Test
                 var matched = false;
                 var result = Science.New<bool>("ComparerFuncReturnsCorrectTrueResult")
                     .Test(control: () => true, candidate: () => true)
-                    .WithComparer((a, b) => a == b)
+                    .WithComparer((a, b) => a.Result == b.Result)
+                    .PublishTo(e => matched = e.Matched)
+                    .Execute();
+
+                Assert.True(matched);
+            }
+
+            [Fact]
+            public void ComparerFuncReturnsCorrectTrueResult2()
+            {
+                var matched = false;
+                var result = Science.New<bool>("ComparerFuncReturnsCorrectTrueResult")
+                    .Test(control: () => true, candidate: () => true)
+                    .WithResultComparer((a, b) => a == b)
                     .PublishTo(e => matched = e.Matched)
                     .Execute();
 
@@ -81,7 +94,21 @@ namespace Shience.Test
                 
                 var result = Science.New<bool>("ComparerFuncReturnsCorrectFalseResult")
                     .Test(control: () => true, candidate: () => false)
-                    .WithComparer((a, b) => a == b)
+                    .WithComparer((a, b) => a.Result == b.Result)
+                    .PublishTo(e => matched = e.Matched)
+                    .Execute();
+
+                Assert.False(matched);
+            }
+
+            [Fact]
+            public void ComparerFuncReturnsCorrectFalseResult2()
+            {
+                var matched = false;
+                
+                var result = Science.New<bool>("ComparerFuncReturnsCorrectFalseResult")
+                    .Test(control: () => true, candidate: () => false)
+                    .WithResultComparer((a, b) => a == b)
                     .PublishTo(e => matched = e.Matched)
                     .Execute();
 
