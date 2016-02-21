@@ -69,7 +69,7 @@ var userCanRead = Science.New<bool>("conditional")
     .Test(control: () => UserPermissions.CheckUser(currentUser),
           candidate: () => User.Can(currentUser, Permission.Read))
     .Where(() => new Random().Next() % 2 == 0) //Run for 50% of requests
-    .Where(() => !currentUser.IsAdmin) // Only if the user is not an admin
+    .Where(() => !currentUser.IsAdmin) //Only if the user is not an admin
     .Where(() => DateTime.UtcNow.Hour >= 8 && DateTime.UtcNow.Hour < 16) //Don't run at peak hours
     .Execute();
 ```
@@ -124,8 +124,10 @@ You can also pass in a comparing `Func<>` to the `WithComparer` method.
 var userCanRead = Science.New<bool>("compare")
     .Test(control: () => UserPermissions.CheckUser(currentUser), 
           candidate: () => User.Can(currentUser, Permission.Read))
-    .WithComparer((controlResult, candidateResult) => controlResult == candidateResult);
+    .WithComparer((controlResult, candidateResult) => controlResult.Result == candidateResult.Result);
 ```
+
+There are three helper methods to provide comparers more easily: `WithResultComparer`, `WithExceptionComparer` and `WithExecutionTimeComparer`.  
 
 ##Publishing
 Experiments aren't helpful if you don't write down the results. To record results, call the `PublishTo` method and give it an action. For simple publishing, you can specify it inline:
