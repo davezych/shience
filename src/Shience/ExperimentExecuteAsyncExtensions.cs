@@ -8,7 +8,8 @@ namespace Shience
 {
     public static class ExperimentExecuteAsyncExtensions
     {
-        public static async Task<TResult> ExecuteAsync<TResult>([NotNull]this Experiment<TResult> experiment)
+        public static async Task<TControl> ExecuteAsync<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
 
@@ -40,9 +41,9 @@ namespace Shience
             return experimentResult.ControlResult.Result;
         }
 
-        private static async Task<ExperimentResult<TResult>> ExecuteExperimentAsync<TResult>(this Experiment<TResult> experiment)
+        private static async Task<ExperimentResult<TControl, TCandidate>> ExecuteExperimentAsync<TControl, TCandidate>(this Experiment<TControl, TCandidate> experiment)
         {
-            var experimentResult = new ExperimentResult<TResult>
+            var experimentResult = new ExperimentResult<TControl, TCandidate>
             {
                 TestName = experiment.TestName,
                 Context = experiment.Context

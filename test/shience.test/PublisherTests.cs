@@ -11,7 +11,7 @@ namespace Shience.Test
 
             var matched = false;
 
-            experiment.Test<bool>(control: () => true, candidate: () => true)
+            experiment.Test<bool, bool>(control: () => true, candidate: () => true)
                 .PublishTo((e) => matched = e.Matched)
                 .Execute();
 
@@ -27,7 +27,7 @@ namespace Shience.Test
             var matchedTwo = false;
             var matchedThree = false;
 
-            experiment.Test<bool>(control: () => true, candidate: () => true)
+            experiment.Test<bool, bool>(control: () => true, candidate: () => true)
                 .PublishTo((e) => matchedOne = e.Matched)
                 .PublishTo((e) => matchedTwo = e.Matched)
                 .PublishTo((e) => matchedThree = e.Matched)
@@ -43,7 +43,7 @@ namespace Shience.Test
         {
             var experiment = Science.New<bool>("PublishIsCalledAfterExecute");
 
-            var result = experiment.Test<bool>(control: () => true, candidate: () => true)
+            var result = experiment.Test<bool, bool>(control: () => true, candidate: () => true)
                 .Execute();
 
             Assert.True(result);

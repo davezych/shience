@@ -19,7 +19,7 @@ namespace Shience.Test
             FilePath = path;
         }
 
-        public void Publish<TResult>([NotNull]ExperimentResult<TResult> result)
+        public void Publish<TControl, TCandidate>([NotNull]ExperimentResult<TControl, TCandidate> result)
         {
             if (result == null) throw new ArgumentNullException(nameof(result));
 
@@ -32,7 +32,7 @@ namespace Shience.Test
             }
         }
 
-        private static string ConvertToJson<TResult>(ExperimentResult<TResult> result)
+        private static string ConvertToJson<TControl, TCandidate>(ExperimentResult<TControl, TCandidate> result)
         {
             var @object = new
             {
@@ -43,7 +43,7 @@ namespace Shience.Test
                 CandidateResult = result.CandidateResult.Result.ToString(),
                 CandidateRunTime = result.CandidateResult.RunTime,
                 result.Matched,
-                Exception = result.ControlResult.Exception,
+                result.ControlResult.Exception,
                 result.Context
             };
 

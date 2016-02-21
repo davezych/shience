@@ -7,8 +7,9 @@ namespace Shience
 {
     internal static class ExperimentCommonExtensions
     {
-        internal static void PublishResults<TResult>([NotNull]this Experiment<TResult> experiment,
-            [NotNull]ExperimentResult<TResult> experimentResult)
+        internal static void PublishResults<TControlResult, TCandidateResult>(
+            [NotNull]this Experiment<TControlResult, TCandidateResult> experiment,
+            [NotNull]ExperimentResult<TControlResult, TCandidateResult> experimentResult)
         {
             experiment.Publishers.ForEach(p => p(experimentResult));
 
@@ -21,8 +22,9 @@ namespace Shience
             experiment.FailurePublishers.ForEach(p => p(experimentResult));
         }
 
-        internal static bool AreResultsMatching<TResult>([NotNull]this Experiment<TResult> experiment,
-            [NotNull]ExperimentResult<TResult> experimentResult)
+        internal static bool AreResultsMatching<TControlResult, TCandidateResult>(
+            [NotNull]this Experiment<TControlResult, TCandidateResult> experiment,
+            [NotNull]ExperimentResult<TControlResult, TCandidateResult> experimentResult)
         {
             var candidate = experimentResult.CandidateResult;
             var control = experimentResult.ControlResult;
@@ -43,12 +45,15 @@ namespace Shience
             return result;
         }
 
-        private static bool ApplyComparers<T>([NotNull]IList<Func<T, T, bool>> comparers, T candidate, T control)
+        private static bool ApplyComparers<TControlResult, TCandidateResult>(
+            [NotNull]IList<Func<TControlResult, TCandidateResult, bool>> comparers,
+            TControlResult control, TCandidateResult candidate)
         {
-            return !comparers.Any() || comparers.All(compare => compare(candidate, control));
+            return !comparers.Any() || comparers.All(compare => compare(control, candidate));
         }
 
-        private static bool AreComparersGiven<TResult>([NotNull]Experiment<TResult> experiment)
+        private static bool AreComparersGiven<TControlResult, TCandidateResult>(
+            [NotNull]Experiment<TControlResult, TCandidateResult> experiment)
         {
             return experiment.Comparers.Any() 
                    || experiment.ResultComparers.Any() 

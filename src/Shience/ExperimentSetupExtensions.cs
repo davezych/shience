@@ -5,8 +5,9 @@ namespace Shience
 {
     public static class ExperimentSetupExtensions
     {
-        public static Experiment<TResult> Test<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<TResult> control, [NotNull]Func<TResult> candidate)
+        public static Experiment<TControl, TCandidate> Test<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Func<TControl> control, [NotNull]Func<TCandidate> candidate)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (control == null) throw new ArgumentNullException(nameof(control));
@@ -24,8 +25,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> PublishTo<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Action<ExperimentResult<TResult>> publish)
+        public static Experiment<TControl, TCandidate> PublishTo<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Action<ExperimentResult<TControl, TCandidate>> publish)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (publish == null) throw new ArgumentNullException(nameof(publish));
@@ -34,8 +36,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> PublishSuccessTo<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Action<ExperimentResult<TResult>> publish)
+        public static Experiment<TControl, TCandidate> PublishSuccessTo<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Action<ExperimentResult<TControl, TCandidate>> publish)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (publish == null) throw new ArgumentNullException(nameof(publish));
@@ -44,8 +47,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> PublishFailureTo<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Action<ExperimentResult<TResult>> publish)
+        public static Experiment<TControl, TCandidate> PublishFailureTo<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Action<ExperimentResult<TControl, TCandidate>> publish)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (publish == null) throw new ArgumentNullException(nameof(publish));
@@ -54,8 +58,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> WithComparer<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<TestResult<TResult>, TestResult<TResult>, bool> comparer)
+        public static Experiment<TControl, TCandidate> WithComparer<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Func<TestResult<TControl>, TestResult<TCandidate>, bool> comparer)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
@@ -65,8 +70,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> WithResultComparer<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<TResult, TResult, bool> comparer)
+        public static Experiment<TControl, TCandidate> WithResultComparer<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Func<TControl, TCandidate, bool> comparer)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
@@ -76,8 +82,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> WithExceptionComparer<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<Exception, Exception, bool> comparer)
+        public static Experiment<TControl, TCandidate> WithExceptionComparer<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Func<Exception, Exception, bool> comparer)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
@@ -87,8 +94,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> WithExecutionTimeComparer<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<TimeSpan, TimeSpan, bool> comparer)
+        public static Experiment<TControl, TCandidate> WithExecutionTimeComparer<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Func<TimeSpan, TimeSpan, bool> comparer)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
@@ -98,8 +106,8 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> WithContext<TResult>(
-            [NotNull]this Experiment<TResult> experiment, dynamic context)
+        public static Experiment<TControl, TCandidate> WithContext<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, dynamic context)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
             
@@ -107,8 +115,9 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> Where<TResult>(
-            [NotNull]this Experiment<TResult> experiment, [NotNull]Func<bool> predicate)
+        public static Experiment<TControl, TCandidate> Where<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment, 
+            [NotNull]Func<bool> predicate)
         {
             if(experiment == null) throw new ArgumentNullException(nameof(experiment));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -118,7 +127,8 @@ namespace Shience
             return experiment;
         }
 
-        public static Experiment<TResult> RaiseOnMismatch<TResult>([NotNull]this Experiment<TResult> experiment)
+        public static Experiment<TControl, TCandidate> RaiseOnMismatch<TControl, TCandidate>(
+            [NotNull]this Experiment<TControl, TCandidate> experiment)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
 

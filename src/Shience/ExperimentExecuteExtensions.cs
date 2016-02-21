@@ -7,7 +7,8 @@ namespace Shience
 {
     public static class ExperimentExecuteExtensions
     {
-        public static TResult Execute<TResult>([NotNull] this Experiment<TResult> experiment)
+        public static TControl Execute<TControl, TCandidate>(
+            [NotNull] this Experiment<TControl, TCandidate> experiment)
         {
             if (experiment == null) throw new ArgumentNullException(nameof(experiment));
 
@@ -43,9 +44,10 @@ namespace Shience
 
         private static readonly Lazy<Random> RandomSingleton = new Lazy<Random>(() => new Random());
 
-        private static ExperimentResult<TResult> ExecuteExperiment<TResult>(Experiment<TResult> experiment)
+        private static ExperimentResult<TControl, TCandidate> ExecuteExperiment<TControl, TCandidate>(
+            [NotNull]Experiment<TControl, TCandidate> experiment)
         {
-            var experimentResult = new ExperimentResult<TResult>
+            var experimentResult = new ExperimentResult<TControl, TCandidate>
             {
                 TestName = experiment.TestName,
                 Context = experiment.Context

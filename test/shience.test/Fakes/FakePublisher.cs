@@ -4,7 +4,7 @@ namespace Shience.Test.Fakes
 {
     internal class FakePublisher
     {
-        public void Publish<TResult>(ExperimentResult<TResult> result)
+        public void Publish<TControl, TCandidate>(ExperimentResult<TControl, TCandidate> result)
         {
             PublishingResults.TestNamesWithResults.Add(result.TestName, result.Matched);
         }
