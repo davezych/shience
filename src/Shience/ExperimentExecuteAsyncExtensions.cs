@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -28,7 +29,7 @@ namespace Shience
 
             if (experimentResult.ControlResult.Exception != null)
             {
-                throw experimentResult.ControlResult.Exception;
+                ExceptionDispatchInfo.Capture(experimentResult.ControlResult.Exception).Throw();
             }
 
             if (experiment.RaiseOnMismatch)
