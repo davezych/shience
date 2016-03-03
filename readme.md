@@ -1,7 +1,7 @@
 #DEPRECATED
 Shience is deprecated in favor of [Scientist.Net](https://github.com/haacked/Scientist.Net), which will be the official Scientist C# port.
 
-﻿#Shience
+#Shience
 A C# library for carefully refactoring critical paths. It's a .NET(ish) port of [Github's Scientist library](https://github.com/github/scientist).
 
 ##How do I do science?
